@@ -2,6 +2,9 @@
 ## Online Module Management Platform
 Ommp is a simple platform managing users and connections and running modules that can be combined to build your dreamed web service. You can directly download new modules from the marketplace and install them in just a few clicks.
 
+## ⚠️ WARNING ⚠️
+This project is still under development and is not finished yet. It can contains bugs and some features are still missing. Use it at your own risks!
+
 ## Requirements
 - Apache >= 2.4.35 (with mod_rewrite)
 - PHP >= 7.2.10
