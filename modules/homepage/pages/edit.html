@@ -1,0 +1,27 @@
+<div class="row mt-4 d-flex justify-content-end">
+	<span style="width:unset;cursor:pointer;" onclick="$('#edit').toggle(500);">{L:EDIT}<img class="inline-image-small ms-2 me-5" role="button" aria-pressed="true" title="{L:EDIT}" src="{S:DIR}media/ommp/images/edit.svg"></span>
+</div>
+<div class="row mt-4 d-flex justify-content-end">
+	<div id="edit" style="display:none;">
+		<textarea class="form-control" id="content-input">{ESCAPED_CONTENT}</textarea><br />
+		<div class="btn pt-1 pb-1 mt-1 btn-success" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="editPage();">{L:SAVE}</div>
+		<div class="btn pt-1 pb-1 mt-1 btn-secondary" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="$('#edit').hide(500);">{L:CANCEL}</div>
+	</div>
+</div>
+<script>
+/**
+ * Display the editor for the custom page
+ */
+function editPage() {
+	// Call the API
+	Api.apiRequest('homepage', 'update-content', {'content': $('#content-input').val()}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Refresh the page
+		location.reload();
+	});
+}
+</script>

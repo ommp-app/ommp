@@ -1,0 +1,21 @@
+{
+    "@name": "English",
+    "@author": "The OMMP Team",
+    "@description": "Official english translation for the connection module",
+    "@module_name": "Connection",
+    "@module_description": "This module is intended to manage the connections to the platform.",
+    "connection.google_recaptcha#name": "Google reCAPTCHA",
+    "connection.google_recaptcha#desc": "Does the connection have to be protected by reCAPTCHA v2",
+    "connection": "Connection",
+    "log_in": "Log in",
+    "username": "Username or email",
+    "password": "Password",
+    "credentials_error": "Incorrect username or password",
+    "credentials_error_explain": "The username, email address or password entered is incorrect",
+    "login_error": "Connection error",
+    "login_error_explain": "An unexpected error occurred during your connection, please try again",
+    "captcha": "Anti-bot confirmation",
+    "captcha_error": "Invalid confirmation",
+    "captcha_error_explain": "Anti-bot confirmation is not correct",
+	"value_0_or_1": "Please enter 0 or 1"
+}

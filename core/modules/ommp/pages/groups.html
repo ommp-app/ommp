@@ -1,0 +1,343 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<div class="text-start" style="display:inline-block;">
+			<a href="{S:DIR}ommp" class="black-link">OMMP</a> &gt;
+	        <h2 class="mb-5">{L:GROUPS_MANAGEMENT}</h2>
+		</div>
+        <div id="content" class="text-start">
+			<div id="create-group-button" class="btn pt-1 pb-1 mt-1 btn-light" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="createGroupDisplay();">{L:CREATE_GROUP}</div>
+			<div id="create-group" style="display:none;">
+				<h5>{L:CREATE_GROUP}</h5>
+				<i>{L:GROUP_NAME}</i><br />
+				<input type="text" class="form-control" id="create-group-name" /><br />
+				<i>{L:DESCRIPTION}</i><br />
+				<textarea class="form-control" id="create-group-description"></textarea><br />
+				<i>{L:COPY_RIGHTS_FROM}</i><br />
+				<select id="create-group-template" class="mb-2"></select><br />
+				<div class="btn pt-1 pb-1 mt-1 btn-success" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="createGroup();">{L:CREATE_GROUP}</div>
+				<div class="btn pt-1 pb-1 mt-1 btn-secondary" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="createGroupCancel();">{L:CANCEL}</div>
+			</div>
+		</div>
+    </div>
+</div>
+<script>
+let membersSuggestions = {}, autocompletes = {}, groupsCount = {}, groupsInfos, allMembers;
+/**
+ * Get the HTML of a user in a list
+ */
+function getMemberCode(groupId, userId, username, longname) {
+	return '<div id="member-' + groupId + '-' + userId + '" class="mb-1">' +
+		getRemoveButton(userId, groupId) +
+		'<a href="{JS:S:DIR}ommp/members#' + escapeHtml(username) + '" class="black-link">' + formatUsername(username, longname, true, true) + '</a></div>'
+}
+/**
+ * Displays the members of a group
+ * 
+ * @param {*} groupId The id of the group
+ */
+function listMembers(groupId) {
+	var count = 0;
+	membersSuggestions[groupId] = [];
+	for (const [id, member] of Object.entries(allMembers)) {
+		if (member.groups.includes(groupId)) {
+			count++;
+			$('#members-' + groupId).append(getMemberCode(groupId, id, member.username, member.longname));
+		} else {
+			membersSuggestions[groupId].push({'label': formatUsername(member.username, member.longname, true), 'value': escapeHtml(member.username), 'userId': id});
+		}
+	}
+	// Enable autocomplete
+	let input = $('#add-input-' + groupId)[0];
+	autocompletes[groupId] = new Autocomplete(input, {
+		data: membersSuggestions[groupId],
+		maximumItems: 5,
+		onSelectItem: ({_, value}) => {
+			input.value = value;
+		},
+		threshold: 1
+	});
+	// Display members count
+	if (count > 0) {
+		$('#members-count-' + groupId).html(' (' + count + ')');
+	}
+	groupsCount[groupId] = count;
+	$('#members-' + groupId).append('<i id="empty-' + groupId + '" class="ms-2"' + (count > 0 ? ' style="display:none;"' : '') + '>' + escapeHtml('{JS:L:NO_MEMBERS}') + '</i>');
+}
+/**
+ * Return the remove button
+ * 
+ * @param {*} userId The id of the user
+ * @param {*} groupId The group id
+ * @return The HTML code of the remove button
+ */
+function getRemoveButton(userId, groupId) {
+    return '<img class="inline-image ms-2 me-2" role="button" aria-pressed="true" title="{JS:L:REMOVE}" src="{JS:S:DIR}media/ommp/images/remove.svg" onclick="removeMember(' + userId + ', ' + groupId + ')" />';
+}
+/**
+ * Return the add button
+ * 
+ * @param {*} groupId The group id
+ * @return The HTML code of the add button
+ */
+function getAddButton(groupId) {
+    return '<img id="add-btn-' + groupId + '" class="inline-image ms-2 me-2" role="button" aria-pressed="true" title="{JS:L:ADD}" src="{JS:S:DIR}media/ommp/images/add.svg" onclick="toggleAddButton(this, ' + groupId + ');" />';
+}
+/**
+ * Return the edit button
+ * 
+ * @param {*} groupId The group id
+ * @return The HTML code of the edit button
+ */
+function getEditButton(groupId) {
+    return '<img id="edit-btn-' + groupId + '" class="inline-image-small ms-2 me-2" role="button" aria-pressed="true" title="{JS:L:EDIT}" src="{JS:S:DIR}media/ommp/images/edit.svg" onclick="editGroup(' + groupId + ');" />';
+}
+/**
+ * Display form to edit a group name and description
+ * 
+ * @param {*} groupId The group id
+ */
+function editGroup(groupId) {
+	var divId = '#group-infos-' + groupId;
+	if ($('#edit-group-title-' + groupId).length == 0 && $('#delete-group-select-' + groupId).length == 0) {
+		// Display the edition controls
+		$(divId).html('<i>{JS:L:GROUP_NAME}</i><br /><input type="text" class="form-control" id="edit-group-title-' + groupId + '" value="' + escapeHtml(groupsInfos[groupId].raw_name) + '" /><br />' +
+			'<i>{JS:L:DESCRIPTION}</i><br /><textarea class="form-control" id="edit-group-dedscription-' + groupId + '">' + escapeHtml(groupsInfos[groupId].raw_description) + '</textarea><br />' +
+			'<div id="group-edit-save-' + groupId + '" class="btn pt-1 pb-1 mt-1 btn-success" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="saveEdit(' + groupId + ')">{JS:L:SAVE}</div>' +
+			(groupId > 3 ? '<div id="group-delete-button-' + groupId + '" class="btn pt-1 pb-1 mt-1 ms-2 btn-danger" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="showGroupDelete(' + groupId + ')">{JS:L:DELETE_GROUP}</div>' : ''));
+	} else {
+		$(divId).html('<i>' + escapeHtml(groupsInfos[groupId].description) + '</i>');
+	}
+}
+/**
+ * Save the group informations
+ *
+ * @param {*} groupId The group id
+ */
+function saveEdit(groupId) {
+	// Check if the controls exists
+	var nameId = '#edit-group-title-' + groupId, descId = '#edit-group-dedscription-' + groupId;
+	if ($(nameId).length !== 0 && $(descId).length !== 0) {
+		// Call the api
+		Api.apiRequest('ommp', 'edit-group-infos', {'id': groupId, 'name': $(nameId).val(), 'description': $(descId).val()}, r => {
+			// Check for errors
+			if (typeof r.error !== 'undefined') {
+				notifError(r.error, '{JS:L:ERROR}');
+				return;
+			}
+			// Update group infos
+			$('#group-infos-' + groupId).html('<i>' + escapeHtml(r.infos.description) + '</i>');
+			$('#group-name-' + groupId).html(escapeHtml(r.infos.name));
+			groupsInfos[groupId] = r.infos;
+		});
+	}
+}
+/**
+ * Display the confirmation for group deletion
+ * 
+ * @param {*} groupId The group id
+ */
+function showGroupDelete(groupId) {
+	// Create the select to choose where to move the members
+	var select = '<select id="delete-group-select-' + groupId + '" class="mt-1">';
+	for (const [id, group] of Object.entries(groupsInfos)) {
+		if (id != groupId) {
+			select += '<option value="' + id + '"' + (id == 2 ? ' selected' : '') + '>' + escapeHtml(group.name) + '</option>';
+		}
+	}
+	select += '</select>';
+	// Display the confirmation
+	$('#group-infos-' + groupId).html('<h5>{JS:L:GROUP_DELETE_CONFIRM}</h5><i>{JS:L:MOVE_MEMBERS_TO}</i><br />' + select + '</br /><br />' +
+		'<div class="btn pt-1 pb-1 mt-1 btn-danger" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="doDeleteGroup(' + groupId + ')">{JS:L:DELETE_GROUP}</div>' +
+		'<div class="btn pt-1 pb-1 mt-1 ms-2 btn-secondary" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="editGroup(' + groupId + ')">{JS:L:CANCEL}</div>');
+}
+/** Call the API to delete a group
+ * 
+ * @param {*} groupId The group id
+ */
+function doDeleteGroup(groupId) {
+	// Get the target group for members
+	var fallback = $('#delete-group-select-' + groupId).val();
+	// Displays a final confirmation
+	promptChoice('{JS:L:GROUP_DELETE_CONFIRM}', '{JS:L:YES}', '{JS:L:NO}', () => {
+		Api.apiRequest('ommp', 'delete-group', {'id': groupId, 'fallback': fallback}, r => {
+			// Check for errors
+			if (typeof r.error !== 'undefined') {
+				editGroup(groupId);
+				notifError(r.error, '{JS:L:ERROR}');
+				return;
+			}
+			// Reload the page to refresh everything
+			location.reload();
+		});
+	}, () => {editGroup(groupId);}, '{JS:L:WARNING}');
+}
+/**
+ * Display the group creation form
+ */
+function createGroupDisplay() {
+	$('#create-group-button').hide(500);
+	$('#create-group').show(500);
+}
+/**
+ * Cancel a group creation
+ */
+function createGroupCancel() {
+	$('#create-group-button').show(500);
+	$('#create-group').hide(500);
+	$('#create-group-name').val('');
+	$('#create-group-description').val('');
+	$('#create-group-template option[value="2"]').prop('selected', true);
+}
+/**
+ * Call the API to create a group
+ */
+function createGroup() {
+	// Get informations
+	var name = $('#create-group-name').val(), description = $('#create-group-description').val(), template = $('#create-group-template').val();
+	// Call the API
+	Api.apiRequest('ommp', 'create-group', {'name': name, 'description': description, 'template': template}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Add the group to the list
+		$('#content').append(getGroupView(r.group.id, r.group));
+		// Add group to all dynamic content
+		groupsInfos[r.group.id] = r.group;
+		listMembers(r.group.id);
+		$('#create-group-template').append('<option value="' + r.group.id + '">' + escapeHtml(r.group.name) + '</option>');
+		// Hide group creation form
+		createGroupCancel();
+	});
+}
+/**
+ * Toggle the add button
+ * 
+ * @param {*} button The HTML element of the button
+ * @param {*} groupId The group id
+ */
+function toggleAddButton(button, groupId) {
+	if ($('#add-' + groupId).is(':visible')) {
+		$(button).animate({rotate: '0deg', duration: 500});
+		$('#add-' + groupId).hide(500);
+	} else {
+		$(button).animate({rotate: '45deg', duration: 500});
+		$('#add-' + groupId).show(500);
+		$('#add-input-' + groupId).focus();
+	}
+}
+/**
+ * Return the code for add text button
+ * 
+ * @param {*} groupId The group id
+ * @return The HTML code of the button
+ */
+function getAddTextButton(groupId) {
+    return '<div id="validate-add-' + groupId + '" class="btn pt-1 pb-1 ms-2 mt-0 btn-success" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="addMember(' + groupId + ')">{JS:L:ADD}</div>';
+}
+/**
+ * Displays the form to add a member to a group
+ * 
+ * @param {*} groupId The group id
+ */
+function addMember(groupId) {
+	// Get the content of the input
+	user = $('#add-input-' + groupId).val();
+	// Call the API
+	Api.apiRequest('ommp', 'add-user-to-group', {'group': groupId, 'username': user}, r => {
+		// Check for errors
+        if (typeof r.error !== 'undefined') {
+            notifError(r.error, '{JS:L:ERROR}');
+            return;
+        }
+        // Add member to the list
+        $('#members-' + groupId).append(getMemberCode(groupId, r.user.id, r.user.username, r.user.longname));
+		groupsCount[groupId]++;
+		$('#empty-' + groupId).hide(0);
+		$('#members-count-' + groupId).html(' (' + groupsCount[groupId] + ')');
+		// Clear input
+		$('#add-input-' + groupId).val('');
+		$('#add-' + groupId).hide(500);
+		$('#add-btn-' + groupId).animate({rotate: '0deg', duration: 500});
+		// Update the suggestions
+		var newSuggestions = [];
+		membersSuggestions[groupId].forEach(member => {
+			if (member.userId != r.user.id) {
+				newSuggestions.push(member);
+			}
+		});
+		membersSuggestions[groupId] = newSuggestions;
+		autocompletes[groupId].setData(membersSuggestions[groupId]);
+	});
+}
+/**
+ * Remove a member from a group
+ * 
+ * @param {*} userId The id of the user
+ * @param {*} groupId The group id
+ * @param {*} confirmed Has the removal confirmed by the user? (optional, default is false)
+ */
+function removeMember(userId, groupId, confirmed=false) {
+	// Display a confirmation
+    if (!confirmed) {
+        promptChoice('{JS:L:CONFIRM_REMOVE}', '{JS:L:YES}', '{JS:L:NO}', () => {removeMember(userId, groupId, true)}, () => {}, '{JS:L:WARNING}');
+        return;
+    }
+    // Call the API
+    Api.apiRequest('ommp', 'remove-member', {'user': userId, 'group': groupId}, r => {
+        // Check for errors
+        if (typeof r.error !== 'undefined') {
+            notifError(r.error, '{JS:L:ERROR}');
+            return;
+        }
+		// Update the suggestions
+		membersSuggestions[groupId].push({'label': formatUsername(r.user.username, r.user.longname, true), 'value': escapeHtml(r.user.username), 'userId': r.user.id});
+		autocompletes[groupId].setData(membersSuggestions[groupId]);
+        // Remove member from the list
+        $('#member-' + groupId + '-' + r.user.id).remove();
+		if ($('#members-' + groupId)[0].childNodes.length == 1) {
+			$('#empty-' + groupId).show(0);
+		}
+		groupsCount[groupId]--;
+		$('#members-count-' + groupId).html(groupsCount[groupId] == 0 ? '' : ' (' + groupsCount[groupId] + ')');
+    });
+}
+/**
+ * Return the HTML code representing a group
+ * 
+ * @param {*} The group id
+ * @param {*} All the informations about the group
+ * @return The HTML code
+ */
+function getGroupView(id, group) {
+	return $('<h3 class="mt-4"><span id="group-name-' + id + '">' + escapeHtml(group.name) + '</span>' + getEditButton(id) + '</h3><div id="group-infos-' + id + '"><i>' + escapeHtml(group.description) +
+		'</i></div><div class="ms-3 mt-3"><h5>{JS:L:MEMBERS}<span id="members-count-' + id + '"></span> ' + getAddButton(id) +
+		'<div id="add-' + id + '" style="display:none;" class="mt-1"><input type="text" class="form-control" style="width:70%;display:inline-block;" placeholder="' + escapeHtml('{JS:L:NAME}') +
+			'" id="add-input-' + id + '" autocomplete="off" />' + getAddTextButton(id) + '</div>' +
+		'</h5><div id="members-' + id + '" class="scrollable"></div><div>');
+}
+/**
+ * Display the page to manage all the groups
+ */
+function displayPage() {
+	// Iteration over the groups
+    for (const [id, group] of Object.entries(groupsInfos)) {
+		// Displays title and description
+		$('#content').append(getGroupView(id, group));
+		// List members
+		listMembers(id);
+		// Add to group creation select
+		$('#create-group-template').append('<option value="' + id + '"' + (id == 2 ? ' selected' : '') + '>' + escapeHtml(group.name) + '</option>');
+	}
+}
+// Get the groups
+Api.apiRequest('ommp', 'get-groups', {}, groups => {
+	Api.apiRequest('ommp', 'get-all-members', {}, members => {
+		// Displays the page
+		groupsInfos = groups;
+		allMembers = members;
+		displayPage();
+	});
+});
+</script>

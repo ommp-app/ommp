@@ -1,0 +1,134 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<h2 class="mb-5">{L:SETTINGS}</h2>
+        <div id="content" class="text-start">
+			<div id="user-profile"></div>
+		</div>
+    </div>
+</div>
+<script>
+/**
+ * Displays a user's informations
+ * 
+ * @param {*} user An object containing informations about the user
+ * @param {*} rights An object containing the rights of the user
+ */
+function displayUser(user, rights) {
+	$('#user-profile').html('<h4 class="mt-5">' + formatUsername(user.username, user.longname, true, true) +
+		'</h4><div class="lighter code">{JS:L:USER_ID}' + user.id + '<br />{JS:L:REGISTRATION_DATE}' + escapeHtml(user.formatted_registration) + 
+		'<br />{JS:L:MEMBER_OF} ' + escapeHtml(user.groups_names.join(', ')) + '</div>' +
+		getEditableInput('{JS:L:USERNAME}', 'username', user.username, !rights.change_username, 'text', rights.change_username) +
+		getEditableInput('{JS:L:LONGNAME}', 'longname', user.longname, !rights.change_name, 'text', rights.change_name) +
+		getEditableInput('{JS:L:EMAIL}', 'email', user.email, !rights.change_email, 'text', rights.change_email) +
+		getEditableOuter('{JS:L:LANG}', 'lang', user.lang_html) +
+		'<hr class="mt-5" />' +
+		getEditableInput('{JS:L:CURRENT_PASSWORD}', 'current-password', '', false, 'password', false) +
+		getEditableInput('{JS:L:NEW_PASSWORD}', 'new-password', '', false, 'password', false) +
+		getEditableInput('{JS:L:CONFIRM_PASSWORD}', 'confirm-password', '', false, 'password', true, 'updateUserPassword') +
+		'<hr class="mt-5" /><div class="btn pt-1 pb-1 mt-4 btn-light" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="logout()">{JS:L:LOGOUT}</div>'
+	);
+}
+/**
+ * Get the HTML code for an editable input
+ * 
+ * @param {*} name The name of the field
+ * @param {*} id The id of the field
+ * @param {*} value The value of the field
+ * @param {*} readonly Should the input be readonly (optional, default is false)
+ * @param {*} type The input type (optional, default is text)
+ * @param {*} button Should we have a save button (optional, default is true)
+ * @param {*} saveFunction The name of the function to call on save (optional, default is 'updateUser')
+ * 
+ * @return The HTML code
+ */
+function getEditableInput(name, id, value, readonly=false, type='text', button=true, saveFunction='updateUser') {
+	return getEditableOuter(name, id, '<input class="form-control" style="width:70%;display:inline-block;" type="' + type + '" id="' + id + '" value="' + escapeHtml(value) + '"' + (readonly || !button ? '' : ' onkeyup="checkEnter(\'' + id + '\');"') + (readonly ? ' readonly' : '') + ' />', button, saveFunction);
+}
+/**
+ * Get the outer HTML code for an editable field
+ * 
+ * @param {*} name The name of the field
+ * @param {*} id The id of the field
+ * @param {*} input The input
+ * @param {*} button Should we have a save button (optional, default is true)
+ * @param {*} saveFunction The name of the function to call on save (optional, default is 'updateUser')
+ * 
+ * @return The HTML code
+ */
+function getEditableOuter(name, id, input, button=true, saveFunction='updateUser') {
+	return '<div class="mt-4"><i>' + escapeHtml(name) + '</i><br />' + input +
+		(button ? '<div class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="' + saveFunction + '(\'' + id + '\')">{JS:L:SAVE}</div></div>' : '');
+}
+/**
+ * Check if ENTER has been pressed in an input
+ * 
+ * @param {*} id The id of the property to update
+ */
+ function checkEnter(id) {
+	if (event.key === 'Enter') {
+		if (id == 'confirm-password') {
+			updateUserPassword(null);
+		} else {
+			updateUser(id);
+		}
+	}
+}
+/**
+ * Update a user information
+ * 
+ * @param {*} property The name of the property to update
+ */
+function updateUser(property) {
+	// Get the property value
+	var value = $('#' + property).val() || '';
+	// Update the value
+	Api.apiRequest('settings', 'update-user', {'property': property, 'value': value}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Display message of reload the page
+		if (['username', 'longname', 'lang'].includes(property)) {
+			location.reload();
+		} else {
+			notif('{JS:L:SETTING_SAVED}');
+		}
+	});
+}
+/**
+ * Update a user password
+ */
+ function updateUserPassword(_) {
+	// Get the paswords
+	var currentPass = $('#current-password').val(),
+		newPass = $('#new-password').val(),
+		confirmPass = $('#confirm-password').val();
+	// Update the value
+	Api.apiRequest('settings', 'update-password', {'current': currentPass, 'new': newPass, 'confirm': confirmPass}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		notif('{JS:L:SETTING_SAVED}');
+		$('input[type="password"]').val('');
+	});
+}
+/**
+ * Logout user
+ */
+function logout() {
+	// Call the API to delete session
+	Api.apiRequest('settings', 'logout', {}, r => {
+		// Redirect to login page
+		location.href = '{JS:S:DIR}connection';
+	});
+}
+// Get user informations and rights
+Api.apiRequest('settings', 'get-user-informations', {}, r1 => {
+	Api.apiRequest('settings', 'get-rights', {}, r2 => {
+		displayUser(r1.user, r2.rights);
+	});
+});
+</script>

@@ -1,0 +1,60 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<div class="text-start" style="display:inline-block;">
+			<a href="{S:DIR}ommp" class="black-link">OMMP</a> &gt; <a href="{S:DIR}ommp/modules" class="black-link">{L:MODULES_MANAGEMENT}</a> &gt;
+	        <h2 class="mb-5">{L:INSTALL_MODULE}</h2>
+		</div>
+		<div id="content" class="text-start">
+			<div class="mt-4">
+				<i>{L:INSTALL_FROM_INTERNET}</i><br />
+				<input class="form-control" style="width:70%;display:inline-block;" type="text" id="module-url" placeholder="{L:DOWNLOAD_URL}" onkeyup="checkEnter();" />
+				<div class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="installFromInternet()">{L:INSTALL}</div>
+			</div>
+			<div class="mt-4">
+				<i>{L:INSTALL_FROM_FILE}</i><br />
+				<div id="file-upload"></div>
+			</div>
+		</div>
+    </div>
+</div>
+<script>
+// Enable file upload
+createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/ommp/install-from-file', r => {
+	// Parse JSON if needed
+	if (typeof r === 'string') {
+		r = JSON.parse(r);
+	}
+	// Check for errors
+	if (typeof r.error !== 'undefined') {
+		notifError(r.error, '{JS:L:ERROR}');
+		return;
+	}
+	// Display message
+	notif('{JS:L:MODULE_INSTALLED}');
+});
+/**
+ * Check if ENTER has been pressed in an input
+ */
+ function checkEnter() {
+	if (event.key === 'Enter') {
+		installFromInternet();
+	}
+}
+/**
+ * Install a module from internet
+ */
+function installFromInternet() {
+	// Get the URL
+	var url = $('#module-url').val();
+	// Call the API
+	Api.apiRequest('ommp', 'install-from-internet', {'url': url}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Display message
+		notif('{JS:L:MODULE_INSTALLED}');
+	});
+}
+</script>

@@ -1,0 +1,23 @@
+{
+    "@name": "Français",
+    "@author": "L'Équipe OMMP",
+    "@description": "Traduction française officielle pour le module de page d'accueil de OMMP",
+    "@module_name": "Page d'accueil",
+    "@module_description": "Ce module est destiné à être affiché comme page d'accueil sur le site",
+    "homepage.allow_edit#name": "Autoriser l'édition",
+    "homepage.allow_edit#desc": "Autorisez-vous l'utilisateur à éditer le contenu de la page d'accueil ? (si la page d'accueil personnalisée est active)",
+	"homepage.custom_homepage#name": "Page d'accueil personnalisée",
+	"homepage.custom_homepage#desc": "Utiliser une page d'accueil personnalisée (vous pourrez éditer directement le code HTML)",
+	"homepage.hide_navbar#name": "Cacher la barre de navigation",
+	"homepage.hide_navbar#desc": "Voulez-vous masquer la barre de navigation de Ommp sur la page d'accueil ?",
+	"value_0_or_1": "Veuillez entrer 0 ou 1",
+	"welcome_to": "Bienvenu sur ",
+	"home": "Accueil",
+	"edit": "Éditer",
+	"missing_parameter": "Il manque un paramètre",
+	"missing_right": "Vous n'avez pas le droit de modifier la page",
+	"save_error": "Une erreur s'est produite lors de l'enregistrement",
+	"save": "Enregistrer",
+	"cancel": "Annuler",
+	"error": "Erreur"
+}

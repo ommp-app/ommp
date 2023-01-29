@@ -1,0 +1,14 @@
+<div class="container mb-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-5 mt-5 text-center">
+            <h2>{ERROR}</h2>
+            <h4>{EXPLAIN}</h4>
+            <a href="{S:REFERER}" id="btn" class="btn btn-outline-dark btn-lg ms-2 me-2 mt-5" role="button" aria-pressed="true">{L:BACK}</a>
+        </div>
+    </div>
+    <script>
+        var btn = document.getElementById('btn');
+        btn.href = '#';
+        btn.onclick = function() {history.back();};
+    </script>
+</div>

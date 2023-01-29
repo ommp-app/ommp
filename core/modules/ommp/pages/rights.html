@@ -1,0 +1,121 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<div class="text-start" style="display:inline-block;">
+			<a href="{S:DIR}ommp" class="black-link">OMMP</a> &gt;
+	        <h2 class="mb-5">{L:RIGHTS_MANAGEMENT}</h2>
+		</div>
+        <div id="content" class="text-start"></div>
+    </div>
+</div>
+<script>
+/**
+ * Return the code for a Allow/Deny button
+ * 
+ * @param {*} right The name of the right
+ * @param {*} value The right current value
+ * @param {*} groupId The group id
+ * @return The HTML code of the button
+ */
+function getButton(right, value, groupId) {
+    return '<div id="' + right + '-' + groupId + '" class="btn pt-0 pb-0 ms-1 btn-' + (value ? 'success' : 'danger' ) + '" role="button" aria-pressed="true" onclick="updateRight(\'' + right + '\', ' + !value + ', ' + groupId + ')">' + (value ? '{JS:L:ALLOWED}' : '{JS:L:DENIED}') + '</div>';
+}
+/**
+ * Return the lock button
+ * 
+ * @param {*} right The name of the right
+ * @param {*} value The lock current value
+ * @param {*} groupId The group id
+ * @return The HTML code of the lock button
+ */
+function getLockButton(right, value, groupId) {
+    return '<img id="' + right + '-lock-' + groupId + '" class="inline-image ms-2" role="button" aria-pressed="true" title="' + escapeHtml(value ? '{JS:L:PROTECTED}' : '{JS:L:NOT_PROTECTED}') + '" src="{JS:S:DIR}media/ommp/images/' + (value ? '' : 'un') + 'locked.svg" onclick="updateLock(\'' + right + '\', ' + !value + ', ' + groupId + ')" />';
+}
+/**
+ * Update a right and the button
+ * 
+ * @param {*} right The name of the right
+ * @param {*} value The right's new value
+ * @param {*} groupId The group id
+ */
+function updateRight(right, value, groupId) {
+    // Call the API
+    Api.apiRequest('ommp', 'update-right', {'right': right, 'value': value, 'group': groupId}, r => {
+        // Check for errors
+        if (typeof r.error !== 'undefined') {
+            notifError(r.error, '{JS:L:ERROR}');
+            return;
+        }
+        // Update the button
+        $(document.getElementById(right + '-' + groupId)).replaceWith(getButton(right, r.new_state, groupId));
+    });
+}
+/**
+ * Update a protection and the button
+ * 
+ * @param {*} right The name of the right
+ * @param {*} value The protection's new value
+ * @param {*} groupId The group id
+ * @param {*} confirmed Has the unlock been confirmed? (default is false)
+ */
+ function updateLock(right, value, groupId, confirmed=false) {
+	// Check if me must display a confirmation
+    if (!value && !confirmed) {
+        promptChoice('{JS:L:CONFIRM_UNLOCK}', '{JS:L:YES}', '{JS:L:NO}', () => {updateLock(right, value, groupId, true)}, () => {}, '{JS:L:WARNING}');
+        return;
+    }
+    // Call the API
+    Api.apiRequest('ommp', 'update-protection', {'right': right, 'value': value, 'group': groupId}, r => {
+        // Check for errors
+        if (typeof r.error !== 'undefined') {
+            notifError(r.error, '{JS:L:ERROR}');
+            return;
+        }
+        // Update the button
+        $(document.getElementById(right + '-lock-' + groupId)).replaceWith(getLockButton(right, r.new_protection, groupId));
+    });
+}
+/**
+ * Display the page to manage all the rights
+ * 
+ * @param {*} module The list of the plateform's modules
+ * @param {*} rights The list of the module's rights
+ * @param {*} groups The list of the plateform's groups
+ */
+function displayPage(modules, rights, groups) {
+
+    var currentModule = '';
+
+    // Iteration over the rights
+    for (const [name, right] of Object.entries(rights)) {
+
+        // Get the module id
+        var module = name.split('.')[0];
+
+        // Check if we need to print the name
+        if (module != currentModule) {
+            if (currentModule != '') {
+                $('#content').append('<hr class="mt-5" />');
+            }
+            currentModule = module;
+            $('#content').append($('<h3 class="mt-4">' + escapeHtml(modules[module].name) + '</h3><div><i>' + escapeHtml(modules[module].description) +'</i></div>'));
+        }
+
+        // Print the right name and description
+        $('#content').append('<div class="ms-3 mt-4"><h5>' + escapeHtml(right.name) + '</h5><div class="small mb-1"><i>' + escapeHtml(right.description) + '</i></div></div>');
+
+        // Print all the groups
+        for (const [groupId, value] of Object.entries(right.values)) {
+            $('#content').append('<div class="ms-5 mt-1">' + escapeHtml(groups[groupId].name) + ' ' + getButton(name, value, groupId) + getLockButton(name, right.protections[groupId], groupId) + '</div>');
+        }
+    }
+}
+// Get the modules, the rights and the groups
+Api.apiRequest('ommp', 'get-modules', {}, modules => {
+    Api.apiRequest('ommp', 'get-rights', {}, rights => {
+        Api.apiRequest('ommp', 'get-groups', {}, groups => {
+            // Displays the page
+            displayPage(modules.modules, rights, groups)
+        });
+    });
+});
+</script>

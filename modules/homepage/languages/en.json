@@ -1,0 +1,23 @@
+{
+    "@name": "English",
+    "@author": "The OMMP Team",
+    "@description": "Official english translation for the OMMP home page module",
+    "@module_name": "Home page",
+    "@module_description": "This module is intended to be displayed as a home page on the site",
+    "homepage.allow_edit#name": "Allow editing",
+    "homepage.allow_edit#desc": "Do you allow the user to edit the content of the home page? (if the personalized home page is active)",
+	"homepage.custom_homepage#name": "Personalized homepage",
+	"homepage.custom_homepage#desc": "Use a personalized homepage (you can edit the HTML code directly)",
+	"homepage.hide_navbar#name": "Hide the navigation bar",
+	"homepage.hide_navbar#desc": "Do you want to hide the Ommp navigation bar on the homepage?",
+	"value_0_or_1": "Please enter 0 or 1",
+	"welcome_to": "Welcome on ",
+	"home": "Home",
+	"edit": "Edit",
+	"missing_parameter": "Missing parameter",
+	"missing_right": "You do not have the right to modify the page",
+	"save_error": "An error occurred while saving",
+	"save": "Save",
+	"cancel": "Cancel",
+	"error": "Error"
+}

@@ -1,0 +1,154 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<div class="text-start" style="display:inline-block;">
+			<a href="{S:DIR}ommp" class="black-link">OMMP</a> &gt;
+	        <h2 class="mb-5">{L:MEMBERS_MANAGEMENT}</h2>
+		</div>
+        <div id="content" class="text-start">
+			<h5>{L:USERNAME}</h5>
+			<input type="text" id="username-search" style="width:70%;display:inline-block;" class="form-control" autocomplete="off" />
+			<div id="create-group-button" class="btn pt-1 pb-1 mt-1 btn-success" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="searchUser();">{L:SEARCH}</div>
+			<div id="user-profile"></div>
+		</div>
+    </div>
+</div>
+<script>
+/**
+ * Search a user
+ * 
+ * @param {*} username The username (optional, will use the input content by default)
+ */
+function searchUser(username=null) {
+	// Get username to search
+	username = username || $('#username-search').val();
+	// Call the API
+	Api.apiRequest('ommp', 'get-user-informations', {'username': username}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Display user page
+		displayUser(r.user);
+	});
+}
+/**
+ * Displays a user's informations
+ * 
+ * @param {*} user An object containing informations about the user
+ */
+function displayUser(user) {
+	$('#user-profile').html('<hr class="mt-5 mb-5" /><h4>' + formatUsername(user.username, user.longname, true, true) +
+		'</h4><div class="lighter code">{JS:L:USER_ID}' + user.id + '<br />{JS:L:REGISTRATION_DATE}' + escapeHtml(user.formatted_registration) + 
+		'<br />{JS:L:MEMBER_OF} ' + escapeHtml(user.groups_names.join(', ')) + '</div>' +
+		getEditableInput('{JS:L:USERNAME}', 'username', user.username, user.id) +
+		getEditableInput('{JS:L:LONGNAME}', 'longname', user.longname, user.id) +
+		getEditableInput('{JS:L:EMAIL}', 'email', user.email, user.id) +
+		getEditableOuter('{JS:L:LANG}', 'lang', user.lang_html, user.id) +
+		getEditableInput('{JS:L:PASSWORD}', 'password', '', user.id, 'password') +
+		'<div class="btn pt-1 pb-1 mt-4 btn-danger" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="deleteUser(' + user.id + ')">{JS:L:DELETE_USER}</div>'
+	);
+	location.href = '#' + user.username;
+}
+/**
+ * Get the HTML code for an editable input
+ * 
+ * @param {*} name The name of the field
+ * @param {*} id The id of the field
+ * @param {*} value The value of the field
+ * @param {*} userId The id of the user
+ * @param {*} type The input type (optional, default is text)
+ * 
+ * @return The HTML code
+ */
+function getEditableInput(name, id, value, userId, type='text') {
+	return getEditableOuter(name, id, '<input class="form-control" style="width:70%;display:inline-block;" type="' + type + '" id="' + id + '" value="' + escapeHtml(value) + '" onkeyup="checkEnter(' + userId + ', \'' + id + '\');" />', userId);
+}
+/**
+ * Get the outer HTML code for an editable field
+ * 
+ * @param {*} name The name of the field
+ * @param {*} id The id of the field
+ * @param {*} input The input
+ * @param {*} userId The id of the user
+ * 
+ * @return The HTML code
+ */
+function getEditableOuter(name, id, input, userId) {
+	return '<div class="mt-4"><i>' + escapeHtml(name) + '</i><br />' + input +
+		'<div class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="updateUser(' + userId + ', \'' + id + '\')">{JS:L:SAVE}</div></div>';
+}
+/**
+ * Delete a user
+ * 
+ * @param {*} userId The id of the user
+ */
+function deleteUser(userId) {
+	// Display a confirmation
+	promptChoice('{JS:L:DELETE_USER_CONFIRM}', '{JS:L:YES}', '{JS:L:NO}', () => {
+		// Call the API
+		Api.apiRequest('ommp', 'delete-user', {'id': userId}, r => {
+			// Check for errors
+			if (typeof r.error !== 'undefined') {
+				notifError(r.error, '{JS:L:ERROR}');
+				return;
+			}
+			// Display message and clear the page
+			notif('{JS:L:USER_DELETED}');
+			$('#user-profile').html('');
+		});
+	}, () => {}, '{JS:L:WARNING}');
+}
+/**
+ * Check if ENTER has been pressed in an input
+ * 
+ * @parap {*} userId The id of the user
+ * @param {*} id The id of the property to update
+ */
+ function checkEnter(userId, id) {
+	if (event.key === 'Enter') {
+		updateUser(userId, id);
+	}
+}
+/**
+ * Update a user information
+ * 
+ * @param {*} userId The id of the user
+ * @param {*} property The name of the property to update
+ */
+function updateUser(userId, property) {
+	// Get the property value
+	var value = $('#' + property).val() || '';
+	// Update the value
+	Api.apiRequest('ommp', 'update-user', {'id': userId, 'property': property, 'value': value}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Display message
+		notif('{JS:L:USER_UPDATED}');
+	});
+}
+// Request API to get the members list
+Api.apiRequest('ommp', 'get-all-members', {}, members => {
+	// Enable autocomplete
+	var membersSuggestions = [];
+	for (const [id, member] of Object.entries(members)) {
+		membersSuggestions.push({'label': formatUsername(member.username, member.longname, true), 'value': escapeHtml(member.username)});
+	}
+	let input = $('#username-search')[0];
+	new Autocomplete(input, {
+		data: membersSuggestions,
+		maximumItems: 5,
+		onSelectItem: ({_, value}) => {
+			input.value = value;
+		},
+		threshold: 1
+	});
+});
+// Search for user in hash
+if (location.hash) {
+	searchUser(location.hash.substring(1));
+}
+</script>

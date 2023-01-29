@@ -1,0 +1,28 @@
+<h1>{L:SQL_CONNECT}</h1>
+<h5 class="mt-4">{L:SQL_EXPLAIN}</h5>
+<hr class="mt-5 mb-5" />
+<h4 class="mb-5">{L:FILL_INFORMATIONS}</h4>
+<form method="post" action="?step=3&amp;lang={LANG}">
+	<div class="mb-4">
+		<label for="db_user" class="form-label">{L:DB_USER}</label>
+		<input type="text" class="form-control" id="db_user" name="db_user" value="" />
+	</div>
+	<div class="mb-4">
+		<label for="db_pass" class="form-label">{L:DB_PASS}</label>
+		<input type="password" class="form-control" id="db_pass" name="db_pass" value="" />
+	</div>
+	<div class="mb-4">
+		<label for="db_host" class="form-label">{L:DB_HOST}</label>
+		<input type="text" class="form-control" id="db_host" name="db_host" value="" />
+	</div>
+	<div class="mb-4">
+		<label for="db_name" class="form-label">{L:DB_NAME}</label>
+		<input type="text" class="form-control" id="db_name" name="db_name" value="" />
+	</div>
+	<div class="mb-4">
+		<label for="db_prefix" class="form-label">{L:DB_PREFIX}</label>
+		<input type="text" class="form-control" id="db_prefix" name="db_prefix" aria-describedby="prefixHelp" value="ommp_" />
+		<div id="prefixHelp" class="form-text">{L:PREFIX_EXPLAIN}</div>
+	</div>
+	<button type="submit" class="btn btn-outline-dark btn-lg mt-4">{L:CONTINUE}</button>
+</form>

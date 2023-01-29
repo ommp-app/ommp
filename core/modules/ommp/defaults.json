@@ -1,0 +1,29 @@
+{
+    "configurations": {
+        "name": "",
+        "description": "",
+        "mail_sender_name": "",
+        "mail_sender": "",
+        "contact_email": "",
+        "domain": "",
+        "scheme": "",
+        "dir": "",
+        "homepage": "homepage",
+        "og_image": "{S:SCHEME}://{S:DOMAIN}{S:DIR}media/ommp/images/og-image.jpg",
+        "session_duration": "2592000",
+        "cookie_user": "ommp_user",
+        "cookie_session": "ommp_session",
+        "cache_lifetime": "31536000",
+        "recaptcha_site": "",
+        "recaptcha_secret": "",
+		"homepage_in_menu": "0"
+    },
+    "rights": {
+        "use": [1, 0, 0],
+        "use_media": [1, 1, 1]
+    },
+    "protected": {
+        "use": [1, 1, 1],
+        "use_media": [1, 1, 1]
+    }
+}

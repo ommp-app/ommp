@@ -1,0 +1,58 @@
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-9 col-lg-7 col-xl-6 col-xxl-5 mt-5 text-center">
+        <h1>{L:REGISTER}</h1>
+    </div>
+</div>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-9 col-lg-7 col-xl-6 col-xxl-5 mt-5 d-flex justify-content-center">
+        <form class="w-100" action="{S:DIR}registration" method="post">
+            <input type="hidden" name="skh" value="{U:SESSION_KEY_HMAC}" />
+            <div class="mb-4">
+                <label for="username" class="form-label">{L:USERNAME}</label>
+                <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" minlength="3" maxlength="32" value="" />
+                <div id="usernameHelp" class="form-text">{L:USERNAME_EXPLAIN}</div>
+            </div>
+            <div class="mb-4">
+                <label for="longname" class="form-label">{L:LONGNAME}</label>
+                <input type="text" class="form-control" id="longname" name="longname" aria-describedby="longnameHelp" maxlength="50" value="" />
+                <div id="longnameHelp" class="form-text">{L:LONGNAME_EXPLAIN}</div>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="form-label">{L:EMAIL}</label>
+                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" maxlength="128" value="" />
+                <div id="emailHelp" class="form-text">{L:EMAIL_EXPLAIN}</div>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">{L:PASSWORD}</label>
+                <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp" minlength="8" value="" />
+                <div id="passwordHelp" class="form-text">{L:PASSWORD_EXPLAIN}</div>
+            </div>
+            <div class="mb-4">
+                <label for="password_confirm" class="form-label">{L:CONFIRM_PASSWORD}</label>
+                <input type="password" class="form-control" id="password_confirm" name="password_confirm" minlength="8" value="" />
+            </div>
+            <div class="mb-4">
+                <label for="language" class="form-label">{L:LANGUAGE}</label>
+                {LANGUAGES}
+            </div>{CAPTCHA}
+            <div class="text-center">
+                <button type="submit" class="btn btn-outline-dark btn-lg mt-4">{L:REGISTER}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    let timeout = null;
+    $('#username').on('input', e => {
+        if (timeout !== null) {
+            clearTimeout(timeout);
+        }
+        $('#username').css('background', 'url({JS:S:DIR}media/ommp/images/loading.gif) center right 0.2em/auto 70% no-repeat');
+        timeout = setTimeout(() => {
+            Api.apiRequest('registration', 'check-username', {'username': e.target.value}, r => {
+                $('#username').css('background', 'url({JS:S:DIR}media/registration/images/' + (r.available ? 'ok' : 'error') + '.svg) center right 0.2em/auto 70% no-repeat');
+            });
+        }, 1000);
+    });
+</script>

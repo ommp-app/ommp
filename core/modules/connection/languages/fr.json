@@ -1,0 +1,21 @@
+{
+    "@name": "Français",
+    "@author": "L'Équipe OMMP",
+    "@description": "Traduction française officielle pour le module de connexion",
+    "@module_name": "Connexion",
+    "@module_description": "Ce module est destiné à gérer les connexions sur la plateforme.",
+    "connection.google_recaptcha#name": "Google reCAPTCHA",
+    "connection.google_recaptcha#desc": "La connexion doit-elle être protégée par reCAPTCHA v2",
+    "connection": "Connexion",
+    "log_in": "Connexion",
+    "username": "Nom d'utilisateur ou e-mail",
+    "password": "Mot de passe",
+    "credentials_error": "Utilisateur ou mot de passe incorrect",
+    "credentials_error_explain": "Le nom d'utilisateur, l'adresse e-mail ou le mot de passe entré est incorrect",
+    "login_error": "Erreur de connexion",
+    "login_error_explain": "Une erreur inattendue s'est produite pendant votre connexion, veuillez réessayer",
+    "captcha": "Confirmation anti-robots",
+    "captcha_error": "Confirmation invalide",
+    "captcha_error_explain": "La confirmation anti-robots n'est pas correcte",
+	"value_0_or_1": "Veuillez entrer 0 ou 1"
+}

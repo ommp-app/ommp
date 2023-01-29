@@ -1,0 +1,66 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<div class="text-start" style="display:inline-block;">
+			<a href="{S:DIR}ommp" class="black-link">OMMP</a> &gt;
+	        <h2 class="mb-5">{L:CONFIGURATIONS}</h2>
+		</div>
+        <div id="content" class="text-start">
+			<i class="lighter">{L:CONFIG_WARNING}</i>
+		</div>
+    </div>
+</div>
+<script>
+/**
+ * Save a configuration
+ * 
+ * @param {*} name The name of the configuration
+ */
+function saveConfig(name) {
+	// Get the configuration new value
+	var value = $('#' + name.replace('.', '\\.')).val();
+	// Call the Api
+	Api.apiRequest('ommp', 'update-configuration', {'name': name, 'value': value}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Display success
+		notif('{JS:L:CONFIG_SAVED}');
+	});
+}
+/**
+ * Check if ENTER has been pressed in an input
+ * 
+ * @param {*} name The name of the configuration
+ */
+function checkEnter(name) {
+	if (event.key === 'Enter') {
+		saveConfig(name);
+	}
+}
+/**
+ * Display the page
+ * 
+ * @param {*} configurations A list of all the configurations
+ */
+function pageDisplay(configurations) {
+	var currentModule = '';
+	configurations.forEach(config => {
+		// Display title if needed
+		if (config.raw_module != currentModule) {
+			currentModule = config.raw_module;
+			$('#content').append('<h3 class="mt-4">' + escapeHtml(config.module) + '</h3>');
+		}
+		// Display the configuration
+		$('#content').append(
+			'<div class="ms-3 mt-4"><h5>' + escapeHtml(config.name) + '</h5><div class="small mb-1"><i>' + escapeHtml(config.description) + '</i><br /><span class="lighter code">' + escapeHtml(config.raw_name) + '</span></div>' +
+			'<input type="text" id="' + escapeHtml(config.raw_name) + '" style="width:70%;display:inline-block;" class="form-control" value="' + escapeHtml(config.value) + '" onkeyup="checkEnter(\'' + escapeHtml(config.raw_name) + '\');" />' +
+			'<div id="create-group-button" class="btn ms-2 mt-2 me-2 pt-1 pb-1 btn-light" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="saveConfig(\'' + escapeHtml(config.raw_name) + '\');">{JS:L:SAVE}</div></div>');
+	});
+}
+// Get the configurations
+Api.apiRequest('ommp', 'get-configurations', {}, r => {
+	pageDisplay(r.configurations);
+});
+</script>

@@ -1,0 +1,9 @@
+modules/*
+!modules/.htaccess
+!modules/homepage
+data/*
+!data/.htaccess
+core/credentials.php
+install/finished
+tmp/*
+!tmp/.htaccess

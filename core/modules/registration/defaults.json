@@ -1,0 +1,14 @@
+{
+    "configurations": {
+        "open": "1",
+        "google_recaptcha": "0"
+    },
+    "rights": {
+        "use": [0, 0, 1],
+        "use_media": [0, 0, 1]
+    },
+    "protected": {
+        "use": [1, 1, 0],
+        "use_media": [0, 0, 1]
+    }
+}

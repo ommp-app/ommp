@@ -1,0 +1,148 @@
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+		<div class="text-start" style="display:inline-block;">
+			<a href="{S:DIR}ommp" class="black-link">OMMP</a> &gt;
+	        <h2 class="mb-5">{L:MODULES_MANAGEMENT}</h2>
+		</div>
+		<div id="content" class="text-start">
+			<div class="btn pt-1 pb-1 btn-light" role="button" aria-pressed="true" onclick="location.href='{S:DIR}ommp/modules/install';">{L:INSTALL_MODULE}</div>
+		</div>
+    </div>
+</div>
+<script>
+/**
+ * Create the HTML code for a module
+ *
+ * @param {*} name The name of the module
+ * @param {*} module An object containing the module's informations
+ * @param {*} max The maximum priority (number of modules minus one)
+ */
+function getModuleCode(name, module, max) {
+	return '<div id="module-' + module.id + '"><h3 class="mt-4">' + escapeHtml(module.name) + '</h4><i>' + escapeHtml(module.description) + '</i><div class="ms-3 mt-2">' +
+		'<h5>{JS:L:PRIORITY}<span id="module-' + module.id + '-priority">' + module.priority + '</span>' + getUpDownButton('up', module.id, module.priority == 0) + getUpDownButton('down', module.id, module.priority == max) + '</h5>' +
+		'<h6>' + getEnableButton(module.id, module.enabled) + (module.core ? '<span class="lighter ms-3"><i>{JS:L:CORE_MODULE}</i></span>' : getUninstallButton(module.id)) + '</h6></div></div>';
+}
+/**
+ * Return the button to uninstall a module
+ * 
+ * @param {*} id The id of the module
+ */
+function getUninstallButton(id) {
+	return '<div id="module-enable-' + id + '" class="btn pt-1 pb-1 ms-2 btn-danger" role="button" aria-pressed="true" onclick="uninstallModule(' + id + ')">{JS:L:UNINSTALL}</div>';
+}
+/**
+ * Uninstall a module
+ * 
+ * @param {*} id The id of the module to uninstall
+ */
+function uninstallModule(id) {
+	// Display a confirmation
+	promptChoice('{JS:L:UNINSTALL_CONFIRM}', '{JS:L:YES}', '{JS:L:NO}', () => {
+		// Call the API
+		Api.apiRequest('ommp', 'unsinstall-module', {'id': id}, r => {
+			// Check for errors
+			if (typeof r.error !== 'undefined') {
+				notifError(r.error, '{JS:L:ERROR}');
+				return;
+			}
+			// Refresh the page
+			location.reload();
+		});
+	}, () => {}, '{JS:L:WARNING}');
+}
+/**
+ * Return the up/down button
+ * 
+ * @param {*} direction The button direction ('up' or 'down')
+ * @param {*} id The id of the module
+ * @param {*} hide Should we hide the button (optional, default is false)
+ * 
+ * @return The HTML code of the button
+ */
+function getUpDownButton(direction, id, hide=false) {
+    return '<img id="module-' + id + '-' + direction + '" class="inline-image-small baseline ms-2" role="button"' + (hide ? ' style="display:none;"' : '') + ' aria-pressed="true" title="' +
+	escapeHtml(direction == 'up' ? '{JS:L:UP}' : '{JS:L:DOWN}') + '" src="{JS:S:DIR}media/ommp/images/' + direction + '.svg" onclick="updatePriority(' + id + ', \'' + direction + '\')" />';
+}
+/**
+ * Return the code for a Enabled/Disabled button
+ * 
+ * @param {*} id The id of the module
+ * @param {*} enabled Is the button on "Enabled"
+ * @return The HTML code of the button
+ */
+function getEnableButton(id, enabled) {
+    return '<div id="module-enable-' + id + '" class="btn pt-1 pb-1 btn-' + (enabled ? 'success' : 'danger' ) + '" role="button" aria-pressed="true" onclick="setModuleState(' + id + ', ' + !enabled + ')">' + (enabled ? '{JS:L:ENABLED}' : '{JS:L:DISABLED}') + '</div>';
+}
+/**
+ * Set a module as enabled or disabled
+ * 
+ * @param {*} id The id of the module
+ * @param {*} state Should we enable the module
+ */
+function setModuleState(id, state) {
+	Api.apiRequest('ommp', 'set-module-state', {'id': id, 'state': state}, r => {
+		// Check for errors
+		if (typeof r.error !== 'undefined') {
+			notifError(r.error, '{JS:L:ERROR}');
+			return;
+		}
+		// Update button
+		$('#module-enable-' + id).replaceWith(getEnableButton(id, r.state));
+	});
+}
+/**
+ * Update the module's priority
+ * 
+ * @param {*} id The module id
+ * @param {*} direction The direction ('up' or 'down')
+ */
+function updatePriority(id, direction) {
+	Api.apiRequest('ommp', 'update-module-priority', {'id': id, 'direction': direction}, r => {
+		// Check for errors
+        if (typeof r.error !== 'undefined') {
+            notifError(r.error, '{JS:L:ERROR}');
+            return;
+        }
+		console.log(r);
+		// Update the page
+		if (direction == 'up') {
+			$('#module-' + r.replace).before($('#module-' + id));
+		} else if (direction == 'down') {
+			$('#module-' + r.replace).after($('#module-' + id));
+		}
+		$('#module-' + id + '-priority').html(r.to);
+		$('#module-' + r.replace + '-priority').html(r.from);
+		if (r.to == 0 && direction == 'up') {
+			$('#module-' + id + '-up').hide();
+			$('#module-' + r.replace + '-up').show();
+		}
+		if (r.from == 0 && direction == 'down') {
+			$('#module-' + id + '-up').show();
+			$('#module-' + r.replace + '-up').hide();
+		}
+		if (r.to == r.max && direction == 'down') {
+			$('#module-' + id + '-down').hide();
+			$('#module-' + r.replace + '-down').show();
+		}
+		if (r.from == r.max && direction == 'up') {
+			$('#module-' + id + '-down').show();
+			$('#module-' + r.replace + '-down').hide();
+		}
+	});
+}
+/**
+ * Display the page
+ * 
+ * @param {*} modules A list of all the installed modules
+ */
+function pageDisplay(modules) {
+	var size = Object.keys(modules).length - 1;
+	for (const [rawName, module] of Object.entries(modules)) {
+		$('#content').append(getModuleCode(rawName, module, size));
+	}
+}
+// Get the modules
+Api.apiRequest('ommp', 'get-modules', {}, r => {
+	pageDisplay(r.modules);
+});
+</script>

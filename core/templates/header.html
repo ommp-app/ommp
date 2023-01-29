@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{TITLE}</title>
+    <link rel="icon" type="image/png" href="{S:DIR}media/ommp/images/favicon.png?v={S:PAGE_RESOURCES_VERSION}" />
+    <script src="{S:DIR}media/ommp/scripts/jquery-3.6.0.min.js?v={S:PAGE_RESOURCES_VERSION}"></script>
+    <script src="{S:DIR}media/ommp/scripts/bootstrap.bundle.min.js?v={S:PAGE_RESOURCES_VERSION}"></script>
+    <script src="{S:DIR}media/ommp/scripts/bootstrap-show-toast.js?v={S:PAGE_RESOURCES_VERSION}"></script>
+    <script src="{S:DIR}media/ommp/scripts/bootstrap-5-autocomplete.min.js?v={S:PAGE_RESOURCES_VERSION}"></script>
+    <script>let ommp_dir = '{JS:S:DIR}', ommp_session_key_hmac = '{JS:U:SESSION_KEY_HMAC}';</script>
+    <script src="{S:DIR}media/ommp/scripts/main.js?v={S:PAGE_RESOURCES_VERSION}"></script>
+    <link href="{S:DIR}media/ommp/styles/bootstrap.min.css?v={S:PAGE_RESOURCES_VERSION}" rel="stylesheet">
+    <link rel="stylesheet" href="{S:DIR}media/ommp/styles/main.css?v={S:PAGE_RESOURCES_VERSION}" />
+    <meta name="theme-color" content="#FAFAFA" />
+    <meta property="og:title" content="{TITLE}" />
+    <meta property="og:description" content="{S:DESCRIPTION}" />
+    <meta property="og:site_name" content="{S:DOMAIN}" />
+    <meta property="og:image" content="{S:OG_IMAGE}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="{S:DOMAIN}" />
+    <meta name="twitter:title" content="{TITLE}" />
+    <meta name="twitter:description" content="{S:DESCRIPTION}" />
+    <meta name="twitter:image" content="{S:OG_IMAGE}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    {NAVBAR}<div class="container mb-5">

@@ -1,0 +1,76 @@
+<h1>{L:FINAL_INFOS}</h1>
+<h5 class="mt-4">{L:FINAL_EXPLAIN}</h5>
+<hr class="mt-5 mb-5" />
+<h4 class="mb-5">{L:FILL_INFORMATIONS}</h4>
+<form method="post" action="?step=4&amp;lang={LANG}">
+	<input type="hidden" name="db_host" value="{DB_HOST}" />
+	<input type="hidden" name="db_user" value="{DB_USER}" />
+	<input type="hidden" name="db_name" value="{DB_NAME}" />
+	<input type="hidden" name="db_pass" value="{DB_PASS}" />
+	<input type="hidden" name="db_prefix" value="{DB_PREFIX}" />
+	<div class="mb-4">
+		<label for="name" class="form-label">{L:PLATFORM_NAME}</label>
+		<input type="text" class="form-control" id="name" name="name" value="" />
+	</div>
+	<div class="mb-4">
+		<label for="description" class="form-label">{L:PLATFORM_DESCRIPTION}</label>
+		<input type="text" class="form-control" id="description" name="description" value="" />
+	</div>
+	<div class="mb-4">
+		<label for="mail_sender_name" class="form-label">{L:MAIL_SENDER_NAME}</label>
+		<input type="text" class="form-control" id="mail_sender_name" name="mail_sender_name" value="" placeholder="{L:EXAMPLE}{L:OMMP_TEAM}" />
+	</div>
+	<div class="mb-4">
+		<label for="mail_sender" class="form-label">{L:MAIL_SENDER}</label>
+		<input type="text" class="form-control" id="mail_sender" name="mail_sender" value="{L:DEMO_MAIL}{DOMAIN}" />
+	</div>
+	<div class="mb-4">
+		<label for="contact_email" class="form-label">{L:CONTACT_EMAIL}</label>
+		<input type="text" class="form-control" id="contact_email" name="contact_email" value="{L:CONTACT_DEMO}{DOMAIN}" />
+	</div>
+	<div class="mb-4">
+		<label for="domain" class="form-label">{L:DOMAIN}</label>
+		<input type="text" class="form-control" id="domain" name="domain" value="{DOMAIN}" />
+	</div>
+	<div class="mb-4">
+		<label for="scheme" class="form-label">{L:SCHEME}</label>
+		<select class="form-select" id="scheme" name="scheme">
+			<option value="http"{SELECT_HTTP}>http</option>
+			<option value="https"{SELECT_HTTPS}>https</option>
+		</select>
+	</div>
+	<div class="mb-4">
+		<label for="dir" class="form-label">{L:INSTALL_DIR}</label>
+		<input type="text" class="form-control" id="dir" name="dir" value="{DIR}" />
+	</div>
+
+	<hr class="mt-5 mb-5" />
+	<h4 class="mb-5">{L:CREATE_ADMIN}</h4>
+	<h6 class="mt-3 mb-4">{L:ADMIN_EXPLAIN}</h6>
+	<div class="mb-4">
+		<label for="username" class="form-label">{L:USERNAME}</label>
+		<input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" minlength="3" maxlength="32" value="" />
+		<div id="usernameHelp" class="form-text">{L:USERNAME_EXPLAIN}</div>
+	</div>
+	<div class="mb-4">
+		<label for="longname" class="form-label">{L:LONGNAME}</label>
+		<input type="text" class="form-control" id="longname" name="longname" aria-describedby="longnameHelp" maxlength="50" value="" />
+		<div id="longnameHelp" class="form-text">{L:LONGNAME_EXPLAIN}</div>
+	</div>
+	<div class="mb-4">
+		<label for="email" class="form-label">{L:EMAIL}</label>
+		<input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" maxlength="128" value="" />
+		<div id="emailHelp" class="form-text">{L:EMAIL_EXPLAIN}</div>
+	</div>
+	<div class="mb-4">
+		<label for="password" class="form-label">{L:PASSWORD}</label>
+		<input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp" minlength="8" value="" />
+		<div id="passwordHelp" class="form-text">{L:PASSWORD_EXPLAIN}</div>
+	</div>
+	<div class="mb-4">
+		<label for="password_confirm" class="form-label">{L:CONFIRM_PASSWORD}</label>
+		<input type="password" class="form-control" id="password_confirm" name="password_confirm" minlength="8" value="" />
+	</div>
+
+	<button type="submit" class="btn btn-outline-dark btn-lg mt-4">{L:CONTINUE}</button>
+</form>

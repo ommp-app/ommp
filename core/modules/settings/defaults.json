@@ -1,0 +1,17 @@
+{
+    "configurations": {},
+    "rights": {
+        "use": [1, 1, 0],
+        "use_media": [1, 1, 0],
+		"change_username": [1, 0, 0],
+		"change_email": [1, 1, 0],
+		"change_name": [1, 1, 0]
+    },
+    "protected": {
+        "use": [1, 1, 1],
+        "use_media": [1, 1, 1],
+		"change_username": [0, 0, 1],
+		"change_email": [0, 0, 1],
+		"change_name": [0, 0, 1]
+    }
+}

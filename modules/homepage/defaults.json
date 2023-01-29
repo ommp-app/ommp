@@ -1,0 +1,16 @@
+{
+    "configurations": {
+        "custom_homepage": "0",
+		"hide_navbar": "0"
+    },
+    "rights": {
+        "use": [1, 1, 1], 
+        "use_media": [1, 1, 1],
+        "allow_edit": [1, 0, 0]
+    },
+    "protected": {
+        "use": [1, 1, 1],
+        "use_media": [1, 1, 1],
+        "allow_edit": [1, 1, 1]
+    }
+}
