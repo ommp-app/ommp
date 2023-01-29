@@ -212,7 +212,7 @@ function module_special_url($url) {
 	global $sql, $db_prefix, $user;
 
 	// Get the list of the modules in priority order
-	$request = $sql->query("SELECT `name` FROM {$db_prefix}modules ORDER BY priority ASC");
+	$request = $sql->query("SELECT `name` FROM {$db_prefix}modules WHERE `enabled` = 1 ORDER BY priority ASC");
 	while ($module = $request->fetch()) {
 
 		// Load the module language based on user's language

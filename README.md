@@ -78,7 +78,7 @@ A module example can be downloaded at https://github.com/ommp-app/example
   - ```xxx_delete_user``` A function called when a user is being removed from the plateform to let the module delete all the related data
   - ```xxx_process_api``` A function to handle the API calls
   - ```xxx_process_page``` A function to generate the HTML content for the pages
-  - ```xxx_url_handler``` A function called to handle special URLs, will be called before triggering a 404 error
+  - ```xxx_url_handler``` A function called to handle special URLs, will be called before triggering a 404 error (Warning: This function will be called even if the current user is not allowed to use the module! You must check yourself the right ```xxx.use``` if the special URL access is restricted)
 - ```uninstall.sql``` The SQL code to remove the module's tables from the database (_{PREFIX}_ will be replaces by the tables prefix before execution)
 
 #### Security requirements

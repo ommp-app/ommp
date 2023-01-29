@@ -101,7 +101,7 @@ function displayPage(modules, rights, groups) {
         }
 
         // Print the right name and description
-        $('#content').append('<div class="ms-3 mt-4"><h5>' + escapeHtml(right.name) + '<small class="ms-1 code">(' + escapeHtml(name) + ')</small></h5><div class="small mb-1"><br /><i>' + escapeHtml(right.description) + '</i></div></div>');
+        $('#content').append('<div class="ms-3 mt-4"><h5>' + escapeHtml(right.name) + '<small class="ms-1 code">(' + escapeHtml(name) + ')</small></h5><div class="small mb-1"><i>' + escapeHtml(right.description) + '</i></div></div>');
 
         // Print all the groups
         for (const [groupId, value] of Object.entries(right.values)) {
