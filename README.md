@@ -43,7 +43,7 @@ A module must respect the structure defined below and implments the required fun
 __Warning:__ A module should never modify a file or a table which does not belong to it!
 
 A module is represented by it's string id, it is a lowercase string containing only alphanumerals characters and underscores.
-_Note:_ A module cannot have the following reserved names: ommp, moderation, registration, connection, settings, api or media.
+_Note:_ A module cannot have the following reserved names: ommp, registration, connection, settings, api or media.
 
 A module example can be downloaded at https://github.com/ommp-app/example
 

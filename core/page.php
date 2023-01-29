@@ -191,7 +191,7 @@ function prepare_html($content, $lang, $variables=[]) {
         $variables['s:description'] = htmlvarescape($config->get("ommp.description"));
     }
     // Find variables and replace them
-    $re = '/(\{([\w_:]+)\})/m';
+    $re = '/(\{([\w_:\.]+)\})/m';
     while (TRUE) {
         preg_match_all($re, $content, $matches, PREG_SET_ORDER, 0);
         $done = [];
@@ -220,7 +220,11 @@ function prepare_html($content, $lang, $variables=[]) {
                     // Lang variable
                     $key = substr($key, 2);
                     $value = $lang->get($key);
-                } else {
+                } else if (substr($key, 0, 2) == "R:") {
+					// Right variable
+					$key = substr($key, 2);
+					$value = $user->has_right($key) ? "1" : "0";
+				} else {
                     $value = $variables[strtolower($key)];
                 }
 
