@@ -185,6 +185,46 @@ function module_media($media) {
 }
 
 /**
+ * Check for all module if they an handle a special URL
+ * 
+ * @param string $url
+ * 		The URL to handle
+ * 
+ * @return boolean
+ * 		TRUE if a module has handled the URL
+ * 		FALSE else
+ */
+function module_special_url($url) {
+	global $sql, $db_prefix, $user;
+
+	// Get the list of the modules in priority order
+	$request = $sql->query("SELECT `name` FROM {$db_prefix}modules ORDER BY priority ASC");
+	while ($module = $request->fetch()) {
+
+		// Load the module language based on user's language
+		$user->module_lang = module_get_lang($module['name']);
+
+		// Load the module's functions
+		require_once module_get_path($module['name']) . "module.php";
+	
+		// Call the URL handler function
+		$response = call_user_func("{$module['name']}_url_handler", $url);
+	
+		// Check if the action exists
+		if ($response) {
+			$request->closeCursor();
+			return TRUE;
+		}
+
+	}
+	$request->closeCursor();
+
+	// Return FALSE
+	return FALSE;
+
+}
+
+/**
  * Handle pages management for modules that doesn't want to pre-process its pages
  * 
  * @param string $page

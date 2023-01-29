@@ -62,7 +62,9 @@ if (module_is_enabled($module_name)) {
 }
 
 // Check for special URL handling in all the enabled modules, in priority order
-// TODO
+if (module_special_url(substr($_SERVER['REDIRECT_URL'], strlen($config->get("ommp.dir"))))) {
+	exit;
+}
 
 // If nothing was found, we display a 404
 page_404_error();
