@@ -86,30 +86,6 @@ Every POST request must have a parameter "skh" containing the valid session key 
 Note that there is no need to add the skh when calling API from the given ```Api``` class.
 The SKH is also available in the JavaScript variable ```ommp_session_key_hmac```.
 
-## Configurations values
-Below a list of all the default configurations for Ommp
-| Name | Default value | Description |
-|----|------|-----|
-| ommp.name | _Defined during installation_ | The name of the platform |
-| ommp.description | _Defined during installation_ | The description of the platform |
-| ommp.mail_sender_name | _Defined during installation_ | The name of the sender for the emails |
-| ommp.mail_sender | _Defined during installation_ | The email address of the sender for the emails |
-| ommp.contact_email | _Defined during installation_ | The contact email of the platform (can be the same as _ommp.mail_sender_) |
-| ommp.domain | _Defined during installation_ | The domain name where OMMP is installed |
-| ommp.scheme | _Defined during installation ("http" or "https")_ | The scheme used to connect to the site |
-| ommp.dir | _Defined during installation_ | The installation of OMMP in the domain |
-| ommp.homepage | homepage | The name of the module to display on platform homepage |
-| ommp.og_image | {S:SCHEME}://{S:DOMAIN}{S:DIR}media/ommp/images/og-image.jpg | The path of the image to use as Open Graph preview |
-| ommp.session_duration | 2592000 | The maximum lifetime of a connection session in seconds (default is one month) |
-| ommp.cookie_user | ommp_user | The name of the cookie that will contains the user id |
-| ommp.cookie_session | ommp_session | The name of the cookie that will contains the session key |
-| ommp.cache_lifetime | 31536000 | The duration of the browser cache for static files in seconds (default is one year) |
-| ommp.recaptcha_site | _Empty_ | The reCAPTCHA site key |
-| ommp.recaptcha_secret | _Empty_ | The reCAPTCHA secret key |
-| registration.open | 1 | Define if the registrations are opened or not |
-| registration.google_recaptcha | 0 | Does the registration have to be protected by reCAPTCHA v2 |
-| connection.google_recaptcha | 0 | Does the connection have to be protected by reCAPTCHA v2 |
-
 ## Groups
 OMMP provides a system to manage users by assign them into groups. Every users in a group can have all the rights granted to this group. A user can be a member of multiple groups.  
 There is three default groups when you install OMMP:
