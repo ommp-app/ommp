@@ -43,7 +43,7 @@ A module must respect the structure defined below and implments the required fun
 __Warning:__ A module should never modify a file or a table which does not belong to it!
 
 A module is represented by it's string id, it is a lowercase string containing only alphanumerals characters and underscores.
-_Note:_ A module cannot have the following reserved names: ommp, registration, connection, settings, api or media.
+_Note:_ A module cannot have the following reserved names: ommp, registration, connection, settings, api, media or prepared_media.
 
 A module example can be downloaded at https://github.com/ommp-app/example
 
@@ -58,6 +58,7 @@ A module example can be downloaded at https://github.com/ommp-app/example
   Each config and right key should have a translated name and descriptions.
   For example "foo.mykey" must have "foo.mykey#name" and "foo.mykey#descr".
 - ```media/``` Contains all the static media files that can be used by the module
+- ```prepared_media/``` Contains all the static text files (JS, CSS, ...) that can be used by the module but that needs to be processed. All the templates variables will be parsed before displaying these files
 - ```pages/``` Contains all the HTML pages that can be displayed for the module
 - ```defaults.json``` A JSON file containing the default value for the configs and rights to set during the installation (without the module name as a prefix). JSON must have the following keys:
   - "configurations": An object of all the configurations with their default values

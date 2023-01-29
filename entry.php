@@ -43,8 +43,8 @@ if ($module_name == "api") {
 }
 
 // Handle media calls
-if ($module_name == "media") {
-    module_media($module_page);
+if ($module_name == "media" || $module_name == "prepared_media") {
+    module_media($module_page, $module_name == "prepared_media");
     exit;
 }
 

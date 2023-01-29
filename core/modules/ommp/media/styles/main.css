@@ -29,6 +29,9 @@ h1 img {
 .inline-image {
     height: 1em;
 }
+.inline-image-semi {
+    height: 1.5em;
+}
 .inline-image-medium {
     height: 2em;
 }

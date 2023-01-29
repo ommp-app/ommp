@@ -165,7 +165,7 @@ function page_read_template($file, $variables=[], $prepare=TRUE, $lang=NULL) {
  *      The content with the replaced variables
  */
 function prepare_html($content, $lang, $variables=[]) {
-    global $user, $config, $hmac_key;
+    global $user, $config;
     // Add some default variables
     $max_upload = @file_upload_max_size();
     $variables = array_merge($variables, array(

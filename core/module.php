@@ -134,8 +134,11 @@ function module_api($page) {
  * 
  * @param string $media
  *      The media requested
+ * @param boolean $prepare
+ * 		Should we prepare the media before returning it?
+ * 		Will work only for text files
  */
-function module_media($media) {
+function module_media($media, $prepare) {
     global $config, $user;
 
     // Get the module name
@@ -179,8 +182,19 @@ function module_media($media) {
     header("Pragma: cache");
     header("Cache-Control: max-age=$seconds_to_cache");
 
-    // Read the file
-    readfile($full_path);
+	if ($prepare) {
+
+		// Prepare the file before displaying it
+		$content = file_get_contents($full_path);
+		$content = prepare_html($content, module_get_lang($module_name));
+		print($content);
+
+	} else {
+
+		// Read the file
+		readfile($full_path);
+
+	}
 
 }
 
