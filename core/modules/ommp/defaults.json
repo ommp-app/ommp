@@ -9,14 +9,16 @@
         "scheme": "",
         "dir": "",
         "homepage": "homepage",
-        "og_image": "{S:SCHEME}://{S:DOMAIN}{S:DIR}media/ommp/images/og-image.jpg",
+        "og_image": "{S:SCHEME}://{S:DOMAIN}{S:DIR}media/ommp/images/og-image.jpg?v={S:PAGE_RESOURCES_VERSION}",
         "session_duration": "2592000",
         "cookie_user": "ommp_user",
         "cookie_session": "ommp_session",
         "cache_lifetime": "31536000",
         "recaptcha_site": "",
         "recaptcha_secret": "",
-		"homepage_in_menu": "0"
+		"homepage_in_menu": "0",
+		"site_logo": "{S:DIR}media/ommp/images/logo-long.svg?v={S:PAGE_RESOURCES_VERSION}",
+		"favicon": "{S:DIR}media/ommp/images/favicon.png?v={S:PAGE_RESOURCES_VERSION}"
     },
     "rights": {
         "use": [1, 0, 0],

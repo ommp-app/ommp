@@ -128,3 +128,4 @@ Note that each right is prefixed by the module string id (like the configuration
 - [ ] GDPR export
 - [ ] Reset module settings and rights
 - [ ] Choose a default language for the platform
+- [ ] Login as (allow an administrator to view the site as another user to test permissions)

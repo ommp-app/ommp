@@ -178,6 +178,8 @@ function prepare_html($content, $lang, $variables=[]) {
         's:max_upload' => $max_upload,
         's:max_upload_hr' => intval($max_upload/1024/1024)." {L:MEGA_BYTE}",
         's:contact_email' => $config->get("ommp.contact_email"),
+        's:site_logo' => $config->get("ommp.site_logo"),
+        's:favicon' => $config->get("ommp.favicon"),
         "u:username" => htmlvarescape($user->username),
         "u:longname" => htmlvarescape($user->longname),
         "u:display_name" => htmlvarescape($user->longname == "" ? $user->username : $user->longname),
