@@ -27,7 +27,7 @@ h1 img {
     height: 1.1em;
 }
 .inline-image {
-    height: 1em;
+    height: 1em!important;
 }
 .inline-image-semi {
     height: 1.5em;
@@ -64,6 +64,9 @@ h1 img {
 .dropdown-item.active, .dropdown-item:active {
     background-color: #CACCCE;
     color: #1B1464;
+}
+.dropdown-item img {
+	vertical-align: sub;
 }
 .justify {
     text-align: justify;

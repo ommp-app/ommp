@@ -18,9 +18,10 @@
  * @param {*} max The maximum priority (number of modules minus one)
  */
 function getModuleCode(name, module, max) {
-	return '<div id="module-' + module.id + '"><h3 class="mt-4">' + escapeHtml(module.name) + '</h4><i>' + escapeHtml(module.description) + '</i><div class="ms-3 mt-2">' +
-		'<h5>{JS:L:PRIORITY}<span id="module-' + module.id + '-priority">' + module.priority + '</span>' + getUpDownButton('up', module.id, module.priority == 0) + getUpDownButton('down', module.id, module.priority == max) + '</h5>' +
-		'<h6>' + getEnableButton(module.id, module.enabled) + (module.core ? '<span class="lighter ms-3"><i>{JS:L:CORE_MODULE}</i></span>' : getUninstallButton(module.id)) + '</h6></div></div>';
+	return '<div id="module-' + module.id + '"><h3 class="mt-4"><img src="{JS:S:DIR}media/' + escapeHtml(name) + '/icon.png" class="inline-image me-2" style="vertical-align:sub;" alt="" />' +
+		escapeHtml(module.name) + '</h4><i>' + escapeHtml(module.description) + '</i><div class="ms-3 mt-2">' + '<h5>{JS:L:PRIORITY}<span id="module-' + module.id + '-priority">' + module.priority + '</span>' +
+		getUpDownButton('up', module.id, module.priority == 0) + getUpDownButton('down', module.id, module.priority == max) + '</h5>' + '<h6>' + getEnableButton(module.id, module.enabled) +
+		(module.core ? '<span class="lighter ms-3"><i>{JS:L:CORE_MODULE}</i></span>' : getUninstallButton(module.id)) + '</h6></div></div>';
 }
 /**
  * Return the button to uninstall a module

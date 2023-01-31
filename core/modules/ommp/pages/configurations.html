@@ -50,7 +50,7 @@ function pageDisplay(configurations) {
 		// Display title if needed
 		if (config.raw_module != currentModule) {
 			currentModule = config.raw_module;
-			$('#content').append('<h3 class="mt-4">' + config.module + '</h3>');
+			$('#content').append('<h3 class="mt-5"><img src="{JS:S:DIR}media/' + escapeHtml(config.raw_module) + '/icon.png" class="inline-image me-2" style="vertical-align:sub;" alt="" />' + config.module + '</h3>');
 		}
 		// Display the configuration
 		$('#content').append(

@@ -58,6 +58,7 @@ A module example can be downloaded at https://github.com/ommp-app/example
   Each config and right key should have a translated name and descriptions.
   For example "foo.mykey" must have "foo.mykey#name" and "foo.mykey#descr".
 - ```media/``` Contains all the static media files that can be used by the module
+  - ```icon.png``` The icon of the module (square PNG image)
 - ```prepared_media/``` Contains all the static text files (JS, CSS, ...) that can be used by the module but that needs to be processed. All the templates variables will be parsed before displaying these files
 - ```pages/``` Contains all the HTML pages that can be displayed for the module
 - ```defaults.json``` A JSON file containing the default value for the configs and rights to set during the installation (without the module name as a prefix). JSON must have the following keys:

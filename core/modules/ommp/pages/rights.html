@@ -97,7 +97,7 @@ function displayPage(modules, rights, groups) {
                 $('#content').append('<hr class="mt-5" />');
             }
             currentModule = module;
-            $('#content').append($('<h3 class="mt-4">' + modules[module].name + '</h3><div><i>' + modules[module].description +'</i></div>'));
+            $('#content').append($('<h3 class="mt-4"><img src="{JS:S:DIR}media/' + escapeHtml(module) + '/icon.png" class="inline-image me-2" style="vertical-align:sub;" alt="" />' + modules[module].name + '</h3><div><i>' + modules[module].description +'</i></div>'));
         }
 
         // Print the right name and description

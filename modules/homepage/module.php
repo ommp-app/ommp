@@ -130,7 +130,8 @@ function homepage_process_page($page, $pages_path) {
 			$module_lang = module_get_lang($module);
 			$modules .= page_read_module($pages_path . "button.html", [
 				"module" => htmlvarescape($module),
-				"module_name" => htmlvarescape($module_lang->get("@module_name"))
+				"module_name" => htmlvarescape($module_lang->get("@module_name")),
+				"module_description" => htmlvarescape($module_lang->get("@module_description"))
 			]);
 		}
 

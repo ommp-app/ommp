@@ -4,10 +4,10 @@
     },
     "rights": {
         "use": [0, 0, 1],
-        "use_media": [0, 0, 1]
+        "use_media": [1, 0, 1]
     },
     "protected": {
         "use": [1, 1, 1],
-        "use_media": [0, 0, 1]
+        "use_media": [1, 0, 1]
     }
 }
