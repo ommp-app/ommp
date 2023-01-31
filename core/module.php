@@ -159,9 +159,9 @@ function module_media($media, $prepare) {
     // Get the module's media path
     $module_media_path = OMMP_ROOT;
     if (is_core_module($module_name)) {
-        $module_media_path .= "/core/modules/$module_name/media/";
+        $module_media_path .= "/core/modules/$module_name/" . ($prepare ? "prepared_" : "") . "media/";
     } else {
-        $module_media_path .= "/modules/$module_name/media/";
+        $module_media_path .= "/modules/$module_name/" . ($prepare ? "prepared_" : "") . "media/";
     }
     $full_path = $module_media_path . $media_page;
 
