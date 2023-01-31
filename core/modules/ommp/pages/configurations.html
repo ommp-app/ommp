@@ -50,11 +50,11 @@ function pageDisplay(configurations) {
 		// Display title if needed
 		if (config.raw_module != currentModule) {
 			currentModule = config.raw_module;
-			$('#content').append('<h3 class="mt-4">' + escapeHtml(config.module) + '</h3>');
+			$('#content').append('<h3 class="mt-4">' + config.module + '</h3>');
 		}
 		// Display the configuration
 		$('#content').append(
-			'<div class="ms-3 mt-4"><h5>' + escapeHtml(config.name) + '</h5><div class="small mb-1"><i>' + escapeHtml(config.description) + '</i><br /><span class="lighter code">' + escapeHtml(config.raw_name) + '</span></div>' +
+			'<div class="ms-3 mt-4"><h5>' + config.name + '</h5><div class="small mb-1"><i>' + config.description + '</i><br /><span class="lighter code">' + escapeHtml(config.raw_name) + '</span></div>' +
 			'<input type="text" id="' + escapeHtml(config.raw_name) + '" style="width:70%;display:inline-block;" class="form-control" value="' + escapeHtml(config.value) + '" onkeyup="checkEnter(\'' + escapeHtml(config.raw_name) + '\');" />' +
 			'<div id="create-group-button" class="btn ms-2 mt-2 me-2 pt-1 pb-1 btn-light" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="saveConfig(\'' + escapeHtml(config.raw_name) + '\');">{JS:L:SAVE}</div></div>');
 	});

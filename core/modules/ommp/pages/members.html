@@ -40,7 +40,7 @@ function searchUser(username=null) {
 function displayUser(user) {
 	$('#user-profile').html('<hr class="mt-5 mb-5" /><h4>' + formatUsername(user.username, user.longname, true, true) +
 		'</h4><div class="lighter code">{JS:L:USER_ID}' + user.id + '<br />{JS:L:REGISTRATION_DATE}' + escapeHtml(user.formatted_registration) + 
-		'<br />{JS:L:MEMBER_OF} ' + escapeHtml(user.groups_names.join(', ')) + '</div>' +
+		'<br />{JS:L:MEMBER_OF} ' + user.groups_names.join(', ') + '</div>' +
 		getEditableInput('{JS:L:USERNAME}', 'username', user.username, user.id) +
 		getEditableInput('{JS:L:LONGNAME}', 'longname', user.longname, user.id) +
 		getEditableInput('{JS:L:EMAIL}', 'email', user.email, user.id) +

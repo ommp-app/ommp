@@ -61,7 +61,7 @@ function listMembers(groupId) {
 		$('#members-count-' + groupId).html(' (' + count + ')');
 	}
 	groupsCount[groupId] = count;
-	$('#members-' + groupId).append('<i id="empty-' + groupId + '" class="ms-2"' + (count > 0 ? ' style="display:none;"' : '') + '>' + escapeHtml('{JS:L:NO_MEMBERS}') + '</i>');
+	$('#members-' + groupId).append('<i id="empty-' + groupId + '" class="ms-2"' + (count > 0 ? ' style="display:none;"' : '') + '>{JS:L:NO_MEMBERS}</i>');
 }
 /**
  * Return the remove button
@@ -105,7 +105,7 @@ function editGroup(groupId) {
 			'<div id="group-edit-save-' + groupId + '" class="btn pt-1 pb-1 mt-1 btn-success" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="saveEdit(' + groupId + ')">{JS:L:SAVE}</div>' +
 			(groupId > 3 ? '<div id="group-delete-button-' + groupId + '" class="btn pt-1 pb-1 mt-1 ms-2 btn-danger" style="vertical-align:bottom;" role="button" aria-pressed="true" onclick="showGroupDelete(' + groupId + ')">{JS:L:DELETE_GROUP}</div>' : ''));
 	} else {
-		$(divId).html('<i>' + escapeHtml(groupsInfos[groupId].description) + '</i>');
+		$(divId).html('<i>' + groupsInfos[groupId].description + '</i>');
 	}
 }
 /**
@@ -125,8 +125,8 @@ function saveEdit(groupId) {
 				return;
 			}
 			// Update group infos
-			$('#group-infos-' + groupId).html('<i>' + escapeHtml(r.infos.description) + '</i>');
-			$('#group-name-' + groupId).html(escapeHtml(r.infos.name));
+			$('#group-infos-' + groupId).html('<i>' + r.infos.description + '</i>');
+			$('#group-name-' + groupId).html(r.infos.name);
 			groupsInfos[groupId] = r.infos;
 		});
 	}
@@ -141,7 +141,7 @@ function showGroupDelete(groupId) {
 	var select = '<select id="delete-group-select-' + groupId + '" class="mt-1">';
 	for (const [id, group] of Object.entries(groupsInfos)) {
 		if (id != groupId) {
-			select += '<option value="' + id + '"' + (id == 2 ? ' selected' : '') + '>' + escapeHtml(group.name) + '</option>';
+			select += '<option value="' + id + '"' + (id == 2 ? ' selected' : '') + '>' + group.name + '</option>';
 		}
 	}
 	select += '</select>';
@@ -206,7 +206,7 @@ function createGroup() {
 		// Add group to all dynamic content
 		groupsInfos[r.group.id] = r.group;
 		listMembers(r.group.id);
-		$('#create-group-template').append('<option value="' + r.group.id + '">' + escapeHtml(r.group.name) + '</option>');
+		$('#create-group-template').append('<option value="' + r.group.id + '">' + r.group.name + '</option>');
 		// Hide group creation form
 		createGroupCancel();
 	});
@@ -311,10 +311,10 @@ function removeMember(userId, groupId, confirmed=false) {
  * @return The HTML code
  */
 function getGroupView(id, group) {
-	return $('<h3 class="mt-4"><span id="group-name-' + id + '">' + escapeHtml(group.name) + '</span>' + getEditButton(id) + '</h3><div id="group-infos-' + id + '"><i>' + escapeHtml(group.description) +
+	return $('<h3 class="mt-4"><span id="group-name-' + id + '">' + group.name + '</span>' + getEditButton(id) + '</h3><div id="group-infos-' + id + '"><i>' + group.description +
 		'</i></div><div class="ms-3 mt-3"><h5>{JS:L:MEMBERS}<span id="members-count-' + id + '"></span> ' + getAddButton(id) +
-		'<div id="add-' + id + '" style="display:none;" class="mt-1"><input type="text" class="form-control" style="width:70%;display:inline-block;" placeholder="' + escapeHtml('{JS:L:NAME}') +
-			'" id="add-input-' + id + '" autocomplete="off" />' + getAddTextButton(id) + '</div>' +
+		'<div id="add-' + id + '" style="display:none;" class="mt-1"><input type="text" class="form-control" style="width:70%;display:inline-block;" placeholder="{JS:L:NAME}" id="add-input-' +
+		id + '" autocomplete="off" />' + getAddTextButton(id) + '</div>' +
 		'</h5><div id="members-' + id + '" class="scrollable"></div><div>');
 }
 /**
@@ -328,7 +328,7 @@ function displayPage() {
 		// List members
 		listMembers(id);
 		// Add to group creation select
-		$('#create-group-template').append('<option value="' + id + '"' + (id == 2 ? ' selected' : '') + '>' + escapeHtml(group.name) + '</option>');
+		$('#create-group-template').append('<option value="' + id + '"' + (id == 2 ? ' selected' : '') + '>' + group.name + '</option>');
 	}
 }
 // Get the groups
