@@ -113,3 +113,18 @@ input, select, textarea, button {
 input[readonly] {
 	background-color: #F0F0F0;
 }
+th {
+	font-weight: bold;
+	color: #808080;
+}
+.table-layout-fixed {
+	table-layout:fixed;
+}
+.table-layout-fixed tr {
+	width: 100%;
+}
+.table-layout-fixed td, .table-layout-fixed td, .cut-text {
+	overflow: hidden; 
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}

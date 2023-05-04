@@ -121,7 +121,7 @@ Note that each right is prefixed by the module string id (like the configuration
 - [ ] Password recuperation
 - [x] Rights
 - [x] User groups
-- [ ] "homepage" module
+- [x] "homepage" module
 - [x] Configurations
 - [x] User administration
 - [ ] Update a module
