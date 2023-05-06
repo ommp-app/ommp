@@ -138,8 +138,9 @@ function formatUsername(username, longname, long=false, escape=true) {
  * @param {*} buttonValue The text to use in the upload button
  * @param {*} url The URL of the page that will receive the file
  * @param {*} callback The function to call after upload (XHR response and status of the request will be passed as parameters)
+ * @param {*} parameters Additional parameters to the POST request (optional, empty object by default)
  */
-function createFileUpload(id, file, buttonValue, url, callback) {
+function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
 	// Create form and controls
 	$('#' + id).html('<form method="post" action="" enctype="multipart/form-data"><input type="file" class="form-control" style="width:70%;display:inline-block;" type="text" id="file-' + id + '" name="file-' + id + '" />' +
 	'<input type="button" class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" value="' + escapeHtml(buttonValue) + '" id="upload-' + id + '" />' +
@@ -151,6 +152,9 @@ function createFileUpload(id, file, buttonValue, url, callback) {
 		var files = $('#file-' + id)[0].files[0];
 		fd.append(file, files);
 		fd.append('skh', ommp_session_key_hmac);
+        for (const [key, value] of Object.entries(parameters)) {
+            fd.append(key, value);
+        }
         // Prepare upload status
         $('#upload-' + id).hide();
         $('#upload-percent-' + id).show();
