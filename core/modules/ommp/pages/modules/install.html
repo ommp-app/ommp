@@ -24,7 +24,7 @@ createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/om
 	r = JSON.parse(xhr.responseText);
 	// Check for status error
 	if (status !== "success") {
-		notifError("{JS:L:NETWORK_ERROR}", '{JS:L:ERROR}');
+		notifError('{JS:L:NETWORK_ERROR}', '{JS:L:ERROR}');
 		return;
 	}
 	// Check for errors

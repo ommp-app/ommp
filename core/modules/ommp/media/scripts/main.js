@@ -28,7 +28,12 @@ class Api {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                callback(JSON.parse(this.responseText));
+                try {
+                    callback(JSON.parse(this.responseText));
+                } catch (e) {
+                    notifError('Incoherent response from API (not a valid JSON)', 'Fatal error'); // TODO: Use translation
+                    return;
+                }
             }
         };
         xhttp.open("POST", ommp_dir + 'api/' + module + '/' + action + '?r=' + Math.random(), true);
@@ -176,7 +181,7 @@ function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
 			processData: false,
 			complete: (result, status) => {
                 // Clean uploader
-                createFileUpload(id, file, buttonValue, url, callback);
+                createFileUpload(id, file, buttonValue, url, callback, parameters);
                 // Call callback
                 callback(result, status);
             },
