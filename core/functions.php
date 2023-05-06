@@ -126,6 +126,21 @@ function parse_size($size) {
 }
 
 /**
+ * Return the size of a folder in bytes
+ * @param string $dir
+ *      The directory to scan
+ * @return int
+ *      The size in bytes of all the files inside the folder and sub-folders
+ */
+function folder_size($dir) {
+    $size = 0;
+    foreach (glob(rtrim($dir, '/').'/*', GLOB_NOSORT) as $each) {
+        $size += is_file($each) ? filesize($each) : folder_size($each);
+    }
+    return $size;
+}
+
+/**
  * Get the mime type of a file, with extention management
  * 
  * @param string $file
@@ -139,7 +154,8 @@ function better_mime_type($file) {
     // Check extensions for files that PHP does not recognize every times
     $types = [
         "css" => "text/css",
-        "js" => "text/javascript"
+        "js" => "text/javascript",
+        "txt" => "text/plain"
     ];
     $extension = substr($file, strrpos($file, ".") + 1);
     if (isset($types[$extension])) {

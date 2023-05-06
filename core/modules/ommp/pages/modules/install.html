@@ -19,10 +19,13 @@
 </div>
 <script>
 // Enable file upload
-createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/ommp/install-from-file', r => {
-	// Parse JSON if needed
-	if (typeof r === 'string') {
-		r = JSON.parse(r);
+createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/ommp/install-from-file', (xhr, status) => {
+	// Parse JSON
+	r = JSON.parse(xhr.responseText);
+	// Check for status error
+	if (status !== "success") {
+		notifError("{JS:L:NETWORK_ERROR}", '{JS:L:ERROR}');
+		return;
 	}
 	// Check for errors
 	if (typeof r.error !== 'undefined') {

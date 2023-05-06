@@ -148,5 +148,6 @@
 	"uninstall_confirm": "Voulez-vous vraiment désinstaller ce module ? Cette action est irréversible. Toutes les données du module seront supprimées.",
 	"module_uninstalled": "Le module a été désinstallé",
 	"cannot_uninstall_core_module": "Vous ne pouvez pas désinstaller un module système",
-	"value_0_or_1": "Veuillez entrer 0 ou 1"
+	"value_0_or_1": "Veuillez entrer 0 ou 1",
+	"network_error": "Erreur réseau"
 }

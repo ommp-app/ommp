@@ -55,6 +55,22 @@ function escapeHtml(text) {
 }
 
 /**
+ * Escape a text to be put in an HTML property
+ * @param {*} text The text to escape
+ * @param {*} js Should we escape simple quote for JavaScript strings? (optional, default is false)
+ * @return The escaped string
+ */
+function escapeHtmlProperty(text, js=false) {
+    var map = {
+        '"': '&quot;',
+    };
+    if (js) {
+        map["'"] = "\\'";
+    }
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+/**
  * Displays a notification on the screen
  * @param {*} body The HTML content of the notification
  * @param {*} header The header of the notification
@@ -121,25 +137,45 @@ function formatUsername(username, longname, long=false, escape=true) {
  * @param {*} file The name of the file for the POST request
  * @param {*} buttonValue The text to use in the upload button
  * @param {*} url The URL of the page that will receive the file
- * @param {*} callback The function to call after upload (response from server will be passed as a parameter)
+ * @param {*} callback The function to call after upload (XHR response and status of the request will be passed as parameters)
  */
 function createFileUpload(id, file, buttonValue, url, callback) {
 	// Create form and controls
 	$('#' + id).html('<form method="post" action="" enctype="multipart/form-data"><input type="file" class="form-control" style="width:70%;display:inline-block;" type="text" id="file-' + id + '" name="file-' + id + '" />' +
-	'<input type="button" class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" value="' + escapeHtml(buttonValue) + '" id="upload-' + id + '"></form>');
+	'<input type="button" class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" value="' + escapeHtml(buttonValue) + '" id="upload-' + id + '" />' +
+    '<span id="upload-percent-' + id +'" style="display:none;" class="ms-4">0 %<span></form>');
 	// Manage file upload
 	$('#upload-' + id).click(() => {
-		var fd = new FormData();
+		// Prepare form
+        var fd = new FormData();
 		var files = $('#file-' + id)[0].files[0];
 		fd.append(file, files);
 		fd.append('skh', ommp_session_key_hmac);
+        // Prepare upload status
+        $('#upload-' + id).hide();
+        $('#upload-percent-' + id).show();
 		$.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+                        $('#upload-percent-' + id).html(Math.floor(percentComplete) + ' %');
+                    }
+                }, false);
+                return xhr;
+            },
 			url: url,
 			type: 'post',
 			data: fd,
 			contentType: false,
 			processData: false,
-			success: callback,
+			complete: (result, status) => {
+                // Clean uploader
+                createFileUpload(id, file, buttonValue, url, callback);
+                // Call callback
+                callback(result, status);
+            },
 		});
 	});
 }
