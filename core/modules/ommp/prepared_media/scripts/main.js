@@ -31,7 +31,7 @@ class Api {
                 try {
                     callback(JSON.parse(this.responseText));
                 } catch (e) {
-                    notifError('Incoherent response from API (not a valid JSON)', 'Fatal error'); // TODO: Use translation
+                    notifError('{JS:L:INVALID_API_JSON}', '{JS:L:ERROR}');
                     return;
                 }
             }
@@ -174,6 +174,17 @@ function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
                 }, false);
                 return xhr;
             },
+            beforeSend: (xhr, settings) => {
+                // Check the file size
+                if (settings.data.get('user_file').size > parseInt('{JS:S:MAX_UPLOAD}')) {
+                    // Display error
+                    notifError('{JS:L:FILE_TOO_LARGE_FOR_UPLOAD}', '{JS:L:ERROR}');
+                    // Clean uploader
+                    createFileUpload(id, file, buttonValue, url, callback, parameters);
+                    // Cancel upload
+                    return false;
+                }
+            },
 			url: url,
 			type: 'post',
 			data: fd,
@@ -188,3 +199,4 @@ function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
 		});
 	});
 }
+let gSettings=null;

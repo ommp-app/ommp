@@ -149,5 +149,7 @@
 	"module_uninstalled": "Le module a été désinstallé",
 	"cannot_uninstall_core_module": "Vous ne pouvez pas désinstaller un module système",
 	"value_0_or_1": "Veuillez entrer 0 ou 1",
-	"network_error": "Erreur réseau"
+	"network_error": "Erreur réseau",
+	"file_too_large_for_upload": "Ce fichier est trop grand pour être envoyé",
+	"invalid_api_json": "Réponse incohérente de l'API (JSON non valide)"
 }
