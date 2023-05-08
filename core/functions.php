@@ -141,6 +141,40 @@ function folder_size($dir) {
 }
 
 /**
+ * Copy a directory and all the sub-elements
+ * @source
+ *      https://www.geeksforgeeks.org/copy-the-entire-contents-of-a-directory-to-another-directory-in-php/
+ * @param string $src
+ *      The source directory
+ * @param string $dst
+ *      The destination
+ * @return boolean
+ *      TRUE if success
+ *      FALSE if failure of at least one file copy
+ */
+function dir_copy($src, $dst) {
+    // open the source directory
+    $dir = opendir($src);
+    // Make the destination directory if not exist
+    @mkdir($dst);
+    // Loop through the files in source directory
+    $result = TRUE;
+    while ($file = readdir($dir)) {
+        if (($file != '.') && ($file != '..')) {
+            if (is_dir($src . '/' . $file)) {
+                // Recursively calling custom copy function
+                // for sub directory
+                $result &= dir_copy($src . '/' . $file, $dst . '/' . $file);
+            } else {
+                $result &= copy($src . '/' . $file, $dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+    return $result;
+}
+
+/**
  * Get the mime type of a file, with extention management
  * 
  * @param string $file
