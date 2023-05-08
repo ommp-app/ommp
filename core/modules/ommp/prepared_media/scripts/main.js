@@ -68,11 +68,12 @@ function escapeHtml(text) {
 function escapeHtmlProperty(text, js=false) {
     var map = {
         '"': '&quot;',
-    };
+    }, re = /["]/g;
     if (js) {
         map["'"] = "\\'";
+        re = /["']/g
     }
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return text.replace(re, m => map[m]);
 }
 
 /**
@@ -199,4 +200,41 @@ function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
 		});
 	});
 }
-let gSettings=null;
+
+/**
+ * Internal fonction to detect the click outside the popup
+ * WARNING: Not to be called directly
+ * @param {*} event The click event
+ */
+function popupClickDetect(event) {
+    // If user clicks inside the popup, do nothing
+    if (document.querySelector('#popup-container').contains(event.target)) {
+        return;
+    }
+    // If user clicks outside the popup, hide it!
+    closePopup();
+};
+
+/**
+ * Displays a popup
+ * @param {*} title The title of the popup (not escaped)
+ * @param {*} content The HTML content of the popup (not escaped)
+ * @param {*} center Center the content? (optional, default is false)
+ */
+function popup(title, content, center=false) {
+    // Close the popup if opened
+    closePopup();
+	// Create the popup
+    $('body').append('<div id="popup"><div id="popup-container"><div id="popup-title">' + title +
+    ' <img src="{JS:S:DIR}media/ommp/images/close.svg" alt="[X]" title="{JS:L:CLOSE}" onclick="closePopup();" /></div><div id="popup-content"' + (center ? ' style="text-align:center;"' : '') + '>' + content + '</div></div></div>');
+    // Detect all clicks on the document
+    setTimeout(() => {document.addEventListener('click', popupClickDetect);}, 100);
+}
+
+/**
+ * Close the openend popup
+ */
+function closePopup() {
+	$('#popup').remove();
+    document.removeEventListener('click', popupClickDetect);
+}

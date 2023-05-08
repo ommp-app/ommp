@@ -151,5 +151,6 @@
 	"value_0_or_1": "Please enter 0 or 1",
 	"network_error": "Network error",
 	"file_too_large_for_upload": "This file is too large to be uploaded",
-	"invalid_api_json": "Incoherent response from API (not a valid JSON)"
+	"invalid_api_json": "Incoherent response from API (not a valid JSON)",
+	"close": "Close"
 }
