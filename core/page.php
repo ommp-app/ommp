@@ -226,6 +226,10 @@ function prepare_html($content, $lang, $variables=[]) {
 					// Right variable
 					$key = substr($key, 2);
 					$value = $user->has_right($key) ? "1" : "0";
+                } else if (substr($key, 0, 2) == "C:") {
+                    // Configuration
+                    $key = substr($key, 2);
+					$value = $config->get($key);
 				} else {
                     $value = $variables[strtolower($key)];
                 }
