@@ -158,7 +158,10 @@ function folder_size($dir) {
 function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
 
     // Reads the image metadata
-    $size = getimagesize($file);
+    $size = @getimagesize($file);
+    if ($size === FALSE) {
+        return FALSE;
+    }
     $width = $size[0];
     $height = $size[1];
     $exif = @exif_read_data($file);
