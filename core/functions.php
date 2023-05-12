@@ -161,7 +161,7 @@ function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
     $size = getimagesize($file);
     $width = $size[0];
     $height = $size[1];
-    $exif = exif_read_data($file);
+    $exif = @exif_read_data($file);
 
     // Reads the image
     $png = FALSE;
