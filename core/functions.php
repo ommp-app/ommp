@@ -182,15 +182,24 @@ function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
             return FALSE;
     }
 
-    // Handle orientation
+    // Handle orientation and mirror
     if (!empty($exif['Orientation'])) {
-        switch ($exif['Orientation']) {
+        $orientation = $exif['Orientation'];
+        // Correct mirror
+        if (in_array($orientation, [2, 4, 5, 7])) {
+            imageflip($image, IMG_FLIP_HORIZONTAL);
+        }
+        // Correct rotation
+        switch ($orientation) {
             case 3:
+            case 4:
                 $image = imagerotate($image, 180, 0);
                 break;
+            case 5:
             case 6:
+            case 7:
             case 8:
-                $image = imagerotate($image, ($exif['Orientation'] == 8 ? 1 : -1) * 90, 0);
+                $image = imagerotate($image, (in_array($orientation, [5, 8]) ? 1 : -1) * 90, 0);
                 $temp = $width;
                 $width = $height;
                 $height = $temp;
