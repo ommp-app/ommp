@@ -148,12 +148,14 @@ function folder_size($dir) {
  * 		The image file
  * @param int $max_size
  * 		The maximum size of the image
+ * @param int $jpeg_quality
+ *      The quality for the JPEG thumbnails between 0 and 100 (optional, default is 100)
  * 
  * @return boolean
  * 		TRUE if the image has been printed
  * 		FALSE in case of error
  */
-function get_image_thumbnail($file, $max_size) {
+function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
 
     // Reads the image metadata
     $size = getimagesize($file);
@@ -214,7 +216,7 @@ function get_image_thumbnail($file, $max_size) {
         imagepng($new_image, NULL, 0); // Output as PNG for transparency
     } else {
         header('Content-Type: image/jpeg');
-        imagejpeg($new_image, NULL, 100); // Output as JPEG for bandwidth saving
+        imagejpeg($new_image, NULL, $jpeg_quality); // Output as JPEG for bandwidth saving
     }
 
     // Return success
