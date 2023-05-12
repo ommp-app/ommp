@@ -141,6 +141,88 @@ function folder_size($dir) {
 }
 
 /**
+ * Output the thumbnail of an image from a file
+ * Supports JPEG, PNG and GIF
+ * 
+ * @param string $file
+ * 		The image file
+ * @param int $max_size
+ * 		The maximum size of the image
+ * 
+ * @return boolean
+ * 		TRUE if the image has been printed
+ * 		FALSE in case of error
+ */
+function get_image_thumbnail($file, $max_size) {
+
+    // Reads the image metadata
+    $size = getimagesize($file);
+    $width = $size[0];
+    $height = $size[1];
+
+    // Reads the image
+    $png = FALSE;
+    switch ($size['mime']) {
+        case 'image/jpg':
+        case 'image/jpeg':
+            $image = imagecreatefromjpeg($file);
+            break;
+        case 'image/gif':
+            $image = @imagecreatefromgif($file);
+            break;
+        case 'image/png':
+            $image = @imagecreatefrompng($file);
+            imagealphablending($image, true);
+            $png = TRUE;
+            break;
+        default:
+            return FALSE;
+    }
+
+    // Check if we try to display image bigger than it is
+    if ($max_size >= max($width, $height)) {
+        return FALSE;
+    }
+
+    // Compute new dimension
+    if ($width > $height) {
+        $new_width = $max_size;
+        $new_height = $max_size / $width * $height;
+    } else {
+        $new_height = $max_size;
+        $new_width = $max_size / $height * $width;
+    }
+
+    // Check sizes
+    if ($new_width <= 1 || $new_height <= 1) {
+        return FALSE;
+    }
+
+    // Create new image
+    $new_image = imagecreatetruecolor($new_width, $new_height);
+    if ($png) {
+        // Handle transparency
+        imagealphablending($new_image, false);
+        imagesavealpha($new_image, true);
+    }
+    // Resize the image
+    imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+    // Print thumbnail
+    if ($png) {
+        header('Content-Type: image/png');
+        imagepng($new_image, NULL, 0); // Output as PNG for transparency
+    } else {
+        header('Content-Type: image/jpeg');
+        imagejpeg($new_image, NULL, 100); // Output as JPEG for bandwidth saving
+    }
+
+    // Return success
+    return TRUE;
+
+}
+
+/**
  * Copy a directory and all the sub-elements
  * @source
  *      https://www.geeksforgeeks.org/copy-the-entire-contents-of-a-directory-to-another-directory-in-php/
