@@ -161,6 +161,7 @@ function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
     $size = getimagesize($file);
     $width = $size[0];
     $height = $size[1];
+    $exif = exif_read_data($file);
 
     // Reads the image
     $png = FALSE;
@@ -179,6 +180,22 @@ function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
             break;
         default:
             return FALSE;
+    }
+
+    // Handle orientation
+    if (!empty($exif['Orientation'])) {
+        switch ($exif['Orientation']) {
+            case 3:
+                $image = imagerotate($image, 180, 0);
+                break;
+            case 6:
+            case 8:
+                $image = imagerotate($image, ($exif['Orientation'] == 8 ? 1 : -1) * 90, 0);
+                $temp = $width;
+                $width = $height;
+                $height = $temp;
+                break;
+        }
     }
 
     // Check if we try to display image bigger than it is
