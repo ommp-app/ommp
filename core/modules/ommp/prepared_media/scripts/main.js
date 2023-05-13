@@ -28,10 +28,18 @@ class Api {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
+                // Try to decode JSON
                 try {
-                    callback(JSON.parse(this.responseText));
+                    var json = JSON.parse(this.responseText);
                 } catch (e) {
                     notifError('{JS:L:INVALID_API_JSON}', '{JS:L:ERROR}');
+                    return;
+                }
+                // Try to execute callback
+                try {
+                    callback(json);
+                } catch (e) {
+                    notifError('{JS:L:API_CALLBACK_ERROR}', '{JS:L:ERROR}');
                     return;
                 }
             }
@@ -68,10 +76,11 @@ function escapeHtml(text) {
 function escapeHtmlProperty(text, js=false) {
     var map = {
         '"': '&quot;',
-    }, re = /["]/g;
+        '&': '&amp;'
+    }, re = /["&]/g;
     if (js) {
         map["'"] = "\\'";
-        re = /["']/g
+        re = /["'&]/g
     }
     return text.replace(re, m => map[m]);
 }

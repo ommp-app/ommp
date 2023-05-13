@@ -152,5 +152,6 @@
 	"network_error": "Network error",
 	"file_too_large_for_upload": "This file is too large to be uploaded",
 	"invalid_api_json": "Incoherent response from API (not a valid JSON)",
-	"close": "Close"
+	"close": "Close",
+	"api_callback_error": "Error processing API response by module"
 }
