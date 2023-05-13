@@ -139,7 +139,7 @@ function module_api($page) {
  * 		Will work only for text files
  */
 function module_media($media, $prepare) {
-    global $config, $user;
+    global $user;
 
     // Get the module name
     $module_name = $media;
@@ -177,16 +177,9 @@ function module_media($media, $prepare) {
 
     // Set the cache control
 	if ($prepare) {
-		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-		header("Cache-Control: post-check=0, pre-check=0", false);
-		header("Pragma: no-cache");
-		header('Expires: Tue, 17 Sep 1996 00:00:00 GMT');
+		headers_no_cache();
 	} else {
-		$seconds_to_cache = intval($config->get('ommp.cache_lifetime'));
-		$ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
-		header("Expires: $ts");
-		header("Pragma: cache");
-		header("Cache-Control: max-age=$seconds_to_cache");
+		headers_cache();
 	}
 
 	if ($prepare) {
@@ -203,6 +196,29 @@ function module_media($media, $prepare) {
 
 	}
 
+}
+
+/**
+ * Print the headers to indicate to the brwoser to cache this file
+ * The cache duration is defined by config "ommp.cache_lifetime"
+ */
+function headers_cache() {
+	global $config;
+	$seconds_to_cache = intval($config->get('ommp.cache_lifetime'));
+	$ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
+	header("Expires: $ts");
+	header("Pragma: cache");
+	header("Cache-Control: max-age=$seconds_to_cache");
+}
+
+/**
+ * Set headers to indicate to the browser not to cache the file
+ */
+function headers_no_cache() {
+	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+	header("Cache-Control: post-check=0, pre-check=0", false);
+	header("Pragma: no-cache");
+	header('Expires: Tue, 17 Sep 1996 00:00:00 GMT');
 }
 
 /**

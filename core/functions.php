@@ -239,6 +239,9 @@ function get_image_thumbnail($file, $max_size, $jpeg_quality=100) {
     // Resize the image
     imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
+    // Set cache headers
+    headers_cache();
+
     // Print thumbnail
     if ($png) {
         header('Content-Type: image/png');
