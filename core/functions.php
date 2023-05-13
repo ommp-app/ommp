@@ -390,19 +390,24 @@ function endsWith($string, $endString) {
  * 
  * @param string $dir
  * 		The directory to remove
+ * 
+ * @return boolean
+ *      TRUE if the directory has been removed
+ *      FALSE else
  */
 function rrmdir($dir) { 
 	if (is_dir($dir)) {
 		$objects = scandir($dir);
 			foreach ($objects as $object) {
 			if ($object != "." && $object != "..") {
-				if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object)) {
-					rrmdir($dir. DIRECTORY_SEPARATOR .$object);
+				if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . DIRECTORY_SEPARATOR . $object)) {
+					rrmdir($dir . DIRECTORY_SEPARATOR . $object);
 				} else {
-					unlink($dir. DIRECTORY_SEPARATOR .$object);
+					unlink($dir . DIRECTORY_SEPARATOR . $object);
 				}
 			}
 		}
-		rmdir($dir);
+		return rmdir($dir);
 	}
+    return FALSE;
 }
