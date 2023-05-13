@@ -165,4 +165,6 @@ th {
     background-color: white;
     border-radius: 0 0 0.5em 0.5em;
     padding: 0.5em;
+    overflow: scroll;
+    max-height: 80vh;
 }
