@@ -225,6 +225,17 @@ function popupClickDetect(event) {
 };
 
 /**
+ * Internal fonction to detect escape touch press to close the popup
+ * WARNING: Not to be called directly
+ * @param {*} event The keyup event
+ */
+function popupEscapeDetect(event) {
+    if (event.key == 'Escape') {
+        closePopup();
+    }
+}
+
+/**
  * Displays a popup
  * @param {*} title The title of the popup (not escaped)
  * @param {*} content The HTML content of the popup (not escaped)
@@ -237,7 +248,10 @@ function popup(title, content, center=false) {
     $('body').append('<div id="popup"><div id="popup-container"><div id="popup-title">' + title +
     ' <img src="{JS:S:DIR}media/ommp/images/close.svg" alt="[X]" title="{JS:L:CLOSE}" onclick="closePopup();" /></div><div id="popup-content"' + (center ? ' style="text-align:center;"' : '') + '>' + content + '</div></div></div>');
     // Detect all clicks on the document
-    setTimeout(() => {document.addEventListener('click', popupClickDetect);}, 100);
+    setTimeout(() => {
+        document.addEventListener('click', popupClickDetect);
+        document.addEventListener('keyup', popupEscapeDetect);
+    }, 100); // Wait before activating the listeners because they can be triggered immediatly if they are set right now
 }
 
 /**
@@ -246,4 +260,5 @@ function popup(title, content, center=false) {
 function closePopup() {
 	$('#popup').remove();
     document.removeEventListener('click', popupClickDetect);
+    document.removeEventListener('click', popupEscapeDetect);
 }
