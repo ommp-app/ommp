@@ -32,6 +32,7 @@ class Api {
                 try {
                     var json = JSON.parse(this.responseText);
                 } catch (e) {
+                    console.error(e);
                     notifError('{JS:L:INVALID_API_JSON}', '{JS:L:ERROR}');
                     return;
                 }
@@ -39,6 +40,7 @@ class Api {
                 try {
                     callback(json);
                 } catch (e) {
+                    console.error(e);
                     notifError('{JS:L:API_CALLBACK_ERROR}', '{JS:L:ERROR}');
                     return;
                 }

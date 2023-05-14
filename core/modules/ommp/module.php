@@ -869,7 +869,7 @@ function ommp_process_api($action, $data) {
 		}
 
 		// Check if we try to uninstall a core module
-		if (is_core_module($module) && !$state) {
+		if (is_core_module($module)) {
 			return ["error" => $user->module_lang->get("cannot_uninstall_core_module")];
 		}
 
