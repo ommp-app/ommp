@@ -130,6 +130,58 @@ function module_api($page) {
 }
 
 /**
+ * Make an internal call to an API action for a specific module
+ * Note that this function emulates an API call but does not perform any HTTP request
+ * 
+ * @param string $module_name
+ * 		The name of the module we want to call
+ * @param string $api_action
+ * 		The name of the action we want to call
+ * @param array $data
+ * 		The parameters that needs to be passed to the API
+ * 		You don't need to provide the session key hmac
+ * 
+ * @return array
+ * 		The array representing the JSON as returned by the API call
+ */
+function module_api_internal_call($module_name, $api_action, $data) {
+
+	global $user;
+
+    // Add the session key hmac (just in case some API uses it, but it is not recomended)
+    $data['skh'] = $user->session_key_hmac;
+
+    // Check if the module is enabled and if user can access it
+    if (!module_is_enabled($module_name) || !$user->has_right("{$module_name}.use")) {
+        output_json(["error" => $user->lang->get("module_disabled")]);
+    }
+
+	// Saves the current module lang
+	$current_module_lang = $user->module_lang;
+
+    // Load the module language based on user's language
+    $user->module_lang = module_get_lang($module_name);
+
+    // Load the module's functions
+    require_once module_get_path($module_name) . "module.php";
+
+    // Call the api function
+    $response = call_user_func("{$module_name}_process_api", $api_action, $data);
+
+    // Check if the action exists
+    if ($response === FALSE) {
+        output_json(["error" => $user->lang->get("action_does_not_exists")]);
+    }
+
+	// Reset the module lang
+	$user->module_lang = $current_module_lang;
+
+    // Return the response
+    return $response;
+
+}
+
+/**
  * Displays a module's media
  * 
  * @param string $media
