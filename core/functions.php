@@ -134,8 +134,12 @@ function parse_size($size) {
  */
 function folder_size($dir) {
     $size = 0;
-    foreach (glob(rtrim($dir, '/').'/*', GLOB_NOSORT) as $each) {
-        $size += is_file($each) ? filesize($each) : folder_size($each);
+    $dir = rtrim($dir, "/");
+    foreach (scandir($dir) as $file) {
+        if ($file != "." && $file != "..") {
+            $full = $dir . "/" . $file;
+            $size += is_file($full) ? filesize($full) : folder_size($full);
+        }
     }
     return $size;
 }

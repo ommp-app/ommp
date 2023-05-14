@@ -242,8 +242,9 @@ function popupEscapeDetect(event) {
  * @param {*} title The title of the popup (not escaped)
  * @param {*} content The HTML content of the popup (not escaped)
  * @param {*} center Center the content? (optional, default is false)
+ * @param {*} onClose A callback function to call when the popup is closed (optional)
  */
-function popup(title, content, center=false) {
+function popup(title, content, center=false, onClose=null) {
     // Close the popup if opened
     closePopup();
 	// Create the popup
@@ -254,13 +255,25 @@ function popup(title, content, center=false) {
         document.addEventListener('click', popupClickDetect);
         document.addEventListener('keyup', popupEscapeDetect);
     }, 100); // Wait before activating the listeners because they can be triggered immediatly if they are set right now
+    // Save the close callback
+    popupCloseCallback = onClose;
 }
 
 /**
  * Close the openend popup
  */
 function closePopup() {
+    // Execute the callback before closing (if the function need to use content from the popup)
+    if (popupCloseCallback !== null) {
+        popupCloseCallback();
+        // Clear the callback
+        popupCloseCallback = null;
+    }
+    // Close the popup
 	$('#popup').remove();
     document.removeEventListener('click', popupClickDetect);
     document.removeEventListener('click', popupEscapeDetect);
 }
+
+// Function to call on popup close
+let popupCloseCallback = null;
