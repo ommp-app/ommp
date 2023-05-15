@@ -153,7 +153,7 @@ function module_api_internal_call($module_name, $api_action, $data) {
 
     // Check if the module is enabled and if user can access it
     if (!module_is_enabled($module_name) || !$user->has_right("{$module_name}.use")) {
-        output_json(["error" => $user->lang->get("module_disabled")]);
+        return ["error" => $user->lang->get("module_disabled")];
     }
 
 	// Saves the current module lang
@@ -170,7 +170,7 @@ function module_api_internal_call($module_name, $api_action, $data) {
 
     // Check if the action exists
     if ($response === FALSE) {
-        output_json(["error" => $user->lang->get("action_does_not_exists")]);
+        return ["error" => $user->lang->get("action_does_not_exists")];
     }
 
 	// Reset the module lang

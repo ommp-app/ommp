@@ -35,6 +35,26 @@ function sendMail($to, $subject, $content) {
 }
 
 /**
+ * Split a directory in sub-directories
+ * Example "abcdefgh/foo.txt" avec $splits=5 deviendra "a/b/c/d/e/fgh/foo.txt"
+ * 
+ * @param string $path
+ *      The path to split
+ * @param int $splits
+ *      The number of levels to add
+ * 
+ * @return string
+ *      The given path with the correct splitting
+ */
+function split_path($path, $splits) {
+    $result = "";
+    for ($i = 0; $i < $splits; $i++) {
+        $result .= substr($path, $i, 1) . "/";
+    }
+    return $result.substr($path, $splits);
+}
+
+/**
  * Display a JSON and exit
  * 
  * @param array $data
