@@ -159,7 +159,7 @@ function formatUsername(username, longname, long=false, escape=true) {
  */
 function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
 	// Create form and controls
-	$('#' + id).html('<form method="post" action="" enctype="multipart/form-data"><input type="file" class="form-control" style="width:70%;display:inline-block;" type="text" id="file-' + id + '" name="file-' + id + '" />' +
+	$('#' + id).html('<form method="post" action="" enctype="multipart/form-data"><input type="file" class="form-control" style="width:70%;display:inline-block;" type="text" id="file-' + id + '" name="' + file + '" />' +
 	'<input type="button" class="btn pt-1 pb-1 mt-2 ms-2 me-2 btn-light" style="vertical-align:baseline;" value="' + escapeHtml(buttonValue) + '" id="upload-' + id + '" />' +
     '<span id="upload-percent-' + id +'" style="display:none;" class="ms-4">0 %<span></form>');
 	// Manage file upload
@@ -188,7 +188,7 @@ function createFileUpload(id, file, buttonValue, url, callback, parameters={}) {
             },
             beforeSend: (xhr, settings) => {
                 // Check the file size
-                if (settings.data.get('user_file').size > parseInt('{JS:S:MAX_UPLOAD}')) {
+                if (settings.data.get(file).size > parseInt('{JS:S:MAX_UPLOAD}')) {
                     // Display error
                     notifError('{JS:L:FILE_TOO_LARGE_FOR_UPLOAD}', '{JS:L:ERROR}');
                     // Clean uploader
