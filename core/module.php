@@ -60,7 +60,7 @@ function exec_module($name, $page, $check=TRUE) {
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
         if (!isset($_POST['skh']) || $_POST['skh'] != $user->session_key_hmac) {
             page_error("{L:WRONG_SKH}", "{L:WRONG_SKH_EXPLAIN}");
-            return;
+            return FALSE;
         }
     }
 
@@ -86,6 +86,9 @@ function exec_module($name, $page, $check=TRUE) {
  */
 function module_api($page) {
     global $user;
+
+	// Disable all PHP warning to prevent a JSON corruption
+	error_reporting(E_ERROR | E_PARSE);
 
     // Check the session key hmac
     if (!isset($_POST['skh']) || $_POST['skh'] != $user->session_key_hmac) {
