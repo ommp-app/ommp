@@ -13,6 +13,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 -- Creates the sessions table
+DROP TABLE IF EXISTS `{PREFIX}sessions`;
 CREATE TABLE IF NOT EXISTS `{PREFIX}sessions` (
   `user_id` int(11) NOT NULL,
   `session_key` varchar(64) COLLATE utf8mb4_bin NOT NULL,

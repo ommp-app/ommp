@@ -13,6 +13,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 -- Creates the users table
+DROP TABLE IF EXISTS `{PREFIX}users`;
 CREATE TABLE IF NOT EXISTS `{PREFIX}users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
