@@ -577,11 +577,13 @@ function module_install($zip_file) {
 	}
 	
 	// Create the tables for the module
-	$sql_content = str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/install.sql"));
-	$result = $sql->exec($sql_content);
-	if ($result === FALSE) {
-		rrmdir($output_dir);
-		return $user->lang->get('cannot_create_tables');
+	if ($mode == "install") {
+		$sql_content = str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/install.sql"));
+		$result = $sql->exec($sql_content);
+		if ($result === FALSE) {
+			rrmdir($output_dir);
+			return $user->lang->get('cannot_create_tables');
+		}
 	}
 
 	// Read the default values
@@ -684,7 +686,7 @@ function module_install($zip_file) {
 		return $user->lang->get('cannot_move_files');
 	}
 
-	// Create the module in the 
+	// Create the module in the database
 	if ($mode == "install") {
 		$count = dbCount("{$db_prefix}modules");
 		$result = $sql->exec("INSERT INTO {$db_prefix}modules VALUES (NULL, '$meta->id', 1, $count)");
@@ -700,34 +702,39 @@ function module_install($zip_file) {
 
 	if ($mode == "update") {
 
-		$result = "";
-		try {
+		// Execute updates for every missed versions
+		for ($i = intval($currentMeta->version) + 1; $i <= intval($meta->version); $i++) {
 
-			// Load the module's update functions
-			if (!file_exists("{$final_dir}/update.php")) {
-				throw new Exception($user->lang->get('update_file_missing'));
+			$result = "";
+			try {
+
+				// Execute SQL script
+				$update_base = "{$final_dir}/update/$i/update.";
+				$sql_script = "{$update_base}sql";
+				if (file_exists($sql_script)) {
+					$sql_content = str_replace("{PREFIX}", $db_prefix, @file_get_contents($sql_script));
+					$result = $sql->exec($sql_content);
+					if ($result === FALSE) {
+						throw new Exception($user->lang->get('cannot_update_sql'));
+					}
+				}
+
+				// Execute PHP script
+				$php_script = "{$update_base}php";
+				if (file_exists($php_script)) {
+					require_once $php_script;
+				}
+				
+			} catch (Exception $exception) {
+	
+				// Restorate original files
+				rrmdir($final_dir);
+				@rename($final_dir . ".v-" . $currentMeta->version, $final_dir);
+	
+				// Return error
+				return $user->lang->get('update_module_error') . "<br /><br /><i>" . $exception->getMessage() . "</i>";
+	
 			}
-			require_once "{$final_dir}/update.php";
-			
-			// Call the update function
-			if (!function_exists("{$meta->id}_update")) {
-				throw new Exception($user->lang->get('update_function_missing'));
-			}
-			$result = call_user_func("{$meta->id}_update", $currentMeta->version);
-
-			// Check result
-			if ($result !== TRUE) {
-				throw new Exception($result);
-			}
-
-		} catch (Exception $exception) {
-
-			// Restorate original files
-			rrmdir($final_dir);
-			@rename($final_dir . ".v-" . $currentMeta->version, $final_dir);
-
-			// Return error
-			return $user->lang->get('update_function_error') . "<br /><br /><i>" . $exception->getMessage() . "</i>";
 
 		}
 

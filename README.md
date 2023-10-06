@@ -81,8 +81,14 @@ A module example can be downloaded at https://github.com/ommp-app/example
   - ```xxx_process_page``` A function to generate the HTML content for the pages
   - ```xxx_url_handler``` A function called to handle special URLs, will be called before triggering a 404 error (Warning: This function will be called even if the current user is not allowed to use the module! You must check yourself the right ```xxx.use``` if the special URL access is restricted)
 - ```uninstall.sql``` The SQL code to remove the module's tables from the database (_{PREFIX}_ will be replaces by the tables prefix before execution)
-- ```update.php``` The file that contains the update function (optional for the 1st version of the module)
-  - ```xxx_update``` A function that will be called when updating the module (It must perform all the actions to update from an older version, the previously installed version of the module will be passed as argument, the function must be able to update from any version). The function must returl TRUE on success, or an error message on error
+- ```update/``` A directory containing the updates directories, one per version (except the first one, see example below)
+  - ```2/``` The directory containing the update files to use when updating to version 2 of module
+    - ```update.sql``` The SQL script to execute when updating to version 2 of module (_{PREFIX}_ will be replaces by the tables prefix before execution)
+    - ```update.php``` A file that will be called to execute all the updates needed (for example on data files). This file must raise an exception with a message in case of error
+  - ```3/``` The directory containing the update files to use when updating to version 2 of module
+    - ```update.sql``` _Same as v2_
+    - ```update.php``` _Same as v2_
+  - _```Etc.```_
 
 #### Security requirements
 For security reasons, the following rules must be followed when developping a module.
@@ -92,6 +98,13 @@ Always use POST requests in your forms that needs to be secured.
 Every POST request must have a parameter "skh" containing the valid session key hmac. This can be done by adding the following line inside every form: ```<input type="hidden" name="skh" value="{U:SESSION_KEY_HMAC}" />```
 Note that there is no need to add the skh when calling API from the given ```Api``` class.
 The SKH is also available in the JavaScript variable ```ommp_session_key_hmac```.
+
+#### About modules updates
+When a module is updated, the following action will be executed in this order:
+- Creating the new configurations from ```defaults.json``` (but not updating the existing ones)
+- Creating the new rights from ```defaults.json``` (but not updating the existing ones)
+- Copying the new module source files
+- Executing the update SQL and PHP scripts in ```update/``` for every version between the one currently installed and the new one (for example if current version is 7 and new is 10, it will execute ```update/8/update.sql```, ```update/8/update.php```, ```update/9/update.sql```, ```update/9/update.php```, ```update/10/update.sql``` and ```update/10/update.php```)
 
 ## Groups
 OMMP provides a system to manage users by assign them into groups. Every users in a group can have all the rights granted to this group. A user can be a member of multiple groups.  

@@ -35,7 +35,6 @@
 	"wrong_ommp_version": "This version of OMMP is too old for this module",
     "cant_update_to_lower": "Unable to update to older version",
     "cannot_backup_current_module": "Unable to save current module files",
-    "update_function_error": "The module encountered an error while updating itself. This error is not caused by OMMP, please contact the module developer.",
-    "update_file_missing": "Missing update file in module",
-    "update_function_missing": "Update function missing in module"
+    "update_module_error": "The module encountered an error while updating it. This error is not caused by OMMP, please contact the module developer. The module may no longer work correctly, if you encounter problems uninstall and reinstall it.",
+    "cannot_update_sql": "Unable to update database"
 }
