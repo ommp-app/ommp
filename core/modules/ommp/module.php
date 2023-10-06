@@ -82,6 +82,27 @@ function ommp_check_config($name, $value, $lang) {
 		return TRUE;
 	}
 
+	// URL or empty
+	if ($name == "store_url") {
+		if (!filter_var($value, FILTER_VALIDATE_URL) && $value != "") {
+			return $lang->get("wrong_url");
+		}
+		return TRUE;
+	}
+
+	// List of URLs
+	if ($name == "trusted_sources") {
+		foreach (explode(",", $value) as $url) {
+			if (substr($url, -1) != "/") {
+				return $lang->get("url_must_end_with_slash");
+			}
+			if (!filter_var($url, FILTER_VALIDATE_URL)) {
+				return $lang->get("wrong_url");
+			}
+		}
+		return TRUE;
+	}
+
 	// All other values are free text, so we accept them
 	return TRUE;
 

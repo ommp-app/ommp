@@ -35,6 +35,30 @@ createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/om
 	// Display message
 	notif('{JS:L:MODULE_INSTALLED}');
 });
+// Detect URL passed as argument
+if (location.hash) {
+	var installURL = location.hash;
+	if (installURL.substr(0, 9) == '#fromsrc:' || installURL.substr(0, 8) == 'fromsrc:') {
+		installURL = installURL.substr(installURL.indexOf(':') + 1);
+
+		// Check if it is from an approved source
+		let trusted = false;
+		'{JS:C:OMMP.TRUSTED_SOURCES}'.split(',').forEach(source => {
+			console.log(source + ', ' + installURL);
+			if (installURL.startsWith(source)) {
+				trusted = true;
+			}
+		});
+
+		// Confirmation for the installation for untrusted source
+		if (!trusted) {
+			promptChoice('{JS:L:EXTERNAL_INSTALL_CONFIRM}<br /><br /><i>' + escapeHtml(installURL) + '</i>', '{JS:L:YES}', '{JS:L:NO}', () => {installFromInternet(installURL);}, () => {}, '<b class="error">{JS:L:UNKNOWN_SOURCE}</b>');
+		} else {
+			// Direct install for trusted sources
+			installFromInternet(installURL);
+		}
+	}
+}
 /**
  * Check if ENTER has been pressed in an input
  */
@@ -45,10 +69,11 @@ createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/om
 }
 /**
  * Install a module from internet
+ * @param {*} url The url of the zip to install (optional, reads the input if empty)
  */
-function installFromInternet() {
-	// Get the URL
-	var url = $('#module-url').val();
+function installFromInternet(url=null) {
+	// Get the URL if needed
+	url = url === null ? $('#module-url').val() : url;
 	// Call the API
 	Api.apiRequest('ommp', 'install-from-internet', {'url': url}, r => {
 		// Check for errors

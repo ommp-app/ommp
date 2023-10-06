@@ -18,7 +18,9 @@
         "recaptcha_secret": "",
 		"homepage_in_menu": "0",
 		"site_logo": "{S:DIR}media/ommp/images/logo-long.svg?v={S:PAGE_RESOURCES_VERSION}",
-		"favicon": "{S:DIR}media/ommp/images/favicon.png?v={S:PAGE_RESOURCES_VERSION}"
+		"favicon": "{S:DIR}media/ommp/images/favicon.png?v={S:PAGE_RESOURCES_VERSION}",
+        "trusted_sources": "https://ommp.app/,https://www.ommp.app/",
+        "store_url": "https://ommp.app/store/?return={S:SCHEME}://{S:DOMAIN}{S:DIR}ommp/modules/install%23fromsrc:"
     },
     "rights": {
         "use": [1, 0, 0],

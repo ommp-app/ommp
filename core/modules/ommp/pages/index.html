@@ -7,4 +7,13 @@
         <a href="{S:DIR}ommp/members" id="btn" class="btn btn-outline-dark btn-lg ms-2 me-2 mt-5" role="button" aria-pressed="true">{L:MEMBERS_MANAGEMENT}</a>
         <a href="{S:DIR}ommp/modules" id="btn" class="btn btn-outline-dark btn-lg ms-2 me-2 mt-5" role="button" aria-pressed="true">{L:MODULES_MANAGEMENT}</a>
     </div>
+    <div id="modules-store" style="display:none;" class="col-lg-10 col-xl-8 col-xxl-7 mt-5 text-center">
+        <h2>{L:MODULES_STORE}</h2>
+        <a href="{C:OMMP.STORE_URL}" id="btn" class="btn btn-outline-dark btn-lg ms-2 me-2 mt-5" role="button" aria-pressed="true">{L:ACCESS_TO_STORE}</a>
+    </div>
 </div>
+<script>
+if ('{JS:C:OMMP.STORE_URL}' != '') {
+    $('#modules-store').show(0);
+}
+</script>

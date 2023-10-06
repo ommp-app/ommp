@@ -42,6 +42,10 @@
 	"ommp.site_logo#desc": "URL du logo à afficher dans la barre de navigation",
 	"ommp.favicon#name": "Favicon du site",
 	"ommp.favicon#desc": "URL de l'image à utiliser en favicon (format PNG)",
+	"ommp.trusted_sources#name": "Sources de confiance",
+	"ommp.trusted_sources#desc": "Une liste d'URL fiables pour les installations externes de modules (n'affichera pas de confirmations pour ces sources)",
+	"ommp.store_url#name": "Adresse du magasin de modules",
+	"ommp.store_url#desc": "Lien pour le bouton permettant d'accéder au magasin de modules en ligne, contient également l'adresse de retour",
     "rights_management": "Gestion des droits",
     "platform_administration": "Administration de la plateforme",
     "configurations": "Configurations",
@@ -153,5 +157,11 @@
 	"file_too_large_for_upload": "Ce fichier est trop grand pour être envoyé",
 	"invalid_api_json": "Réponse incohérente de l'API (JSON non valide)",
 	"close": "Fermer",
-	"api_callback_error": "Erreur de traitement de la réponse de l'API par le module"
+	"api_callback_error": "Erreur de traitement de la réponse de l'API par le module",
+	"unknown_source": "Vous êtes sur le point d'installer un module depuis une source inconnue",
+	"external_install_confirm": "Voulez-vous installer un module depuis la source suivante ?",
+	"wrong_url": "Format d'URL invalide",
+	"url_must_end_with_slash": "Chaque URL doit se terminer par une barre oblique \"/\"",
+	"modules_store": "Magasin de modules",
+	"access_to_store": "Accéder au magasin"
 }

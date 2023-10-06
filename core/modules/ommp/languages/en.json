@@ -42,6 +42,10 @@
 	"ommp.site_logo#desc": "URL of the logo to display in the navbar",
 	"ommp.favicon#name": "Site favicon",
 	"ommp.favicon#desc": "URL of the image to use as a favicon (PNG format)",
+	"ommp.trusted_sources#name": "Trusted sources",
+	"ommp.trusted_sources#desc": "A list of URLs that can be trusted for external modules installations (won't display confirmations for these sources)",
+	"ommp.store_url#name": "Module store address",
+	"ommp.store_url#desc": "Link for button to access online modules store, also contains return address",
     "rights_management": "Rights management",
     "platform_administration": "Platform administration",
     "configurations": "Configurations",
@@ -153,5 +157,11 @@
 	"file_too_large_for_upload": "This file is too large to be uploaded",
 	"invalid_api_json": "Incoherent response from API (not a valid JSON)",
 	"close": "Close",
-	"api_callback_error": "Error processing API response by module"
+	"api_callback_error": "Error processing API response by module",
+	"unknown_source": "You are about to install a module from an unknown source",
+	"external_install_confirm": "Do you want to install a module from the following source?",
+	"wrong_url": "Invalid URL format",
+	"url_must_end_with_slash": "Each URL must end by a slash \"/\"",
+	"modules_store": "Modules store",
+	"access_to_store": "Access to store"
 }
