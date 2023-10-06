@@ -228,6 +228,7 @@ function prepare_html($content, $lang, $variables=[]) {
 					$value = $user->has_right($key) ? "1" : "0";
                 } else if (substr($key, 0, 2) == "C:") {
                     // Configuration
+                    $key = strtolower($key);
                     $key = substr($key, 2);
 					$value = $config->get($key);
 				} else {
