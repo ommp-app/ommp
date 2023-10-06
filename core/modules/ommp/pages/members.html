@@ -6,7 +6,7 @@
 		</div>
         <div id="content" class="text-start">
 			<h5>{L:USERNAME}</h5>
-			<input type="text" id="username-search" style="width:70%;display:inline-block;" class="form-control" autocomplete="off" />
+			<input type="text" id="username-search" style="width:70%;display:inline-block;" class="form-control" autocomplete="off" onkeyup="checkEnterSearch();" />
 			<div id="create-group-button" class="btn pt-1 pb-1 mt-1 btn-success" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="searchUser();">{L:SEARCH}</div>
 			<div id="user-profile"></div>
 		</div>
@@ -108,6 +108,14 @@ function deleteUser(userId) {
  function checkEnter(userId, id) {
 	if (event.key === 'Enter') {
 		updateUser(userId, id);
+	}
+}
+/**
+ * Check if ENTER has been pressed in the search input
+ */
+ function checkEnterSearch() {
+	if (event.key === 'Enter') {
+		searchUser();
 	}
 }
 /**
