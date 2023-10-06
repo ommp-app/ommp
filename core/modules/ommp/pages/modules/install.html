@@ -33,7 +33,7 @@ createFileUpload('file-upload', 'module_zip', '{JS:L:UPLOAD}', '{JS:S:DIR}api/om
 		return;
 	}
 	// Display message
-	notif('{JS:L:MODULE_INSTALLED}');
+	notif(r.mode == 'install' ? '{JS:L:MODULE_INSTALLED}' : '{JS:L:MODULE_UPDATED}');
 });
 // Detect URL passed as argument
 if (location.hash) {
@@ -82,7 +82,7 @@ function installFromInternet(url=null) {
 			return;
 		}
 		// Display message
-		notif('{JS:L:MODULE_INSTALLED}');
+		notif(r.mode == 'install' ? '{JS:L:MODULE_INSTALLED}' : '{JS:L:MODULE_UPDATED}');
 	});
 }
 </script>

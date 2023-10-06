@@ -168,3 +168,6 @@ th {
     overflow-y: auto;
     max-height: 80vh;
 }
+.text-bg-danger code {
+    color: white;
+}

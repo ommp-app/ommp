@@ -835,13 +835,14 @@ function ommp_process_api($action, $data) {
 		// Download the file
 		$file_name = basename($data['url']) . "_" . rand() . ".zip";
 		$temp_file = OMMP_TEMP_DIR . "/$file_name";
+		$result = 1;
 		if (file_put_contents($temp_file, file_get_contents($data['url']))) {
 			
 			// Run the module installation
 			$result = module_install($temp_file);
 
 			// Check for error
-			if ($result !== TRUE) {
+			if ($result !== 1 && $result !== 2) {
 				return ["error" => $result];
 			}
 
@@ -850,7 +851,7 @@ function ommp_process_api($action, $data) {
 		}
 
 		// Return success
-		return ["ok" => TRUE];
+		return ["ok" => TRUE, "mode" => $result == 1 ? "install": "update"];
 
 	} else if ($action == "install-from-file") {
 
@@ -867,12 +868,12 @@ function ommp_process_api($action, $data) {
 		$result = module_install($dest);
 
 		// Check for error
-		if ($result !== TRUE) {
+		if ($result !== 1 && $result !== 2) {
 			return ["error" => $result];
 		}
 
 		// Return success
-		return ["ok" => TRUE];
+		return ["ok" => TRUE, "mode" => $result == 1 ? "install": "update"];
 
 	} else if ($action == "unsinstall-module") {
 

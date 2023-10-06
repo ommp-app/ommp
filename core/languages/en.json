@@ -33,5 +33,9 @@
 	"cannot_move_files": "Cannot move module files to destination",
 	"cannot_register_module": "Unable to register the module",
 	"wrong_ommp_version": "This version of OMMP is too old for this module",
-	"module_already_installed": "This module is already installed"
+    "cant_update_to_lower": "Unable to update to older version",
+    "cannot_backup_current_module": "Unable to save current module files",
+    "update_function_error": "The module encountered an error while updating itself. This error is not caused by OMMP, please contact the module developer.",
+    "update_file_missing": "Missing update file in module",
+    "update_function_missing": "Update function missing in module"
 }

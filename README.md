@@ -81,6 +81,8 @@ A module example can be downloaded at https://github.com/ommp-app/example
   - ```xxx_process_page``` A function to generate the HTML content for the pages
   - ```xxx_url_handler``` A function called to handle special URLs, will be called before triggering a 404 error (Warning: This function will be called even if the current user is not allowed to use the module! You must check yourself the right ```xxx.use``` if the special URL access is restricted)
 - ```uninstall.sql``` The SQL code to remove the module's tables from the database (_{PREFIX}_ will be replaces by the tables prefix before execution)
+- ```update.php``` The file that contains the update function (optional for the 1st version of the module)
+  - ```xxx_update``` A function that will be called when updating the module (It must perform all the actions to update from an older version, the previously installed version of the module will be passed as argument, the function must be able to update from any version). The function must returl TRUE on success, or an error message on error
 
 #### Security requirements
 For security reasons, the following rules must be followed when developping a module.
@@ -124,7 +126,8 @@ Note that each right is prefixed by the module string id (like the configuration
 - [x] "homepage" module
 - [x] Configurations
 - [x] User administration
-- [ ] Update a module
+- [x] Update a module
+- [ ] Automaticly update the modules
 - [x] User settings
 - [ ] GDPR export
 - [ ] Reset module settings and rights

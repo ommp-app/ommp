@@ -404,16 +404,30 @@ function module_get_path($name) {
 }
 
 /**
+ * Get the module's data path
+ * 
+ * @param string $name
+ *      The name of the module
+ * 
+ * @return string
+ *      The absolute path where the module data are located
+ */
+function module_get_data_path($name) {
+    return OMMP_ROOT . "/data/$name/";
+}
+
+/**
  * Get metadata informations for a module
  * 
  * @param string $name
  *      The name of the module
  * 
- * @return stdClass
+ * @return stdClass|null
  *      The object representing the module's metadata
+ * 		null if module does not exists or if metedata are corrupted
  */
 function module_get_metadata($name) {
-    return json_decode(file_get_contents(module_get_path($name) . "meta.json"));
+    return @json_decode(@file_get_contents(module_get_path($name) . "meta.json"));
 }
 
 /**
@@ -504,13 +518,14 @@ function module_is_enabled($name) {
 }
 
 /**
- * Install a module
+ * Install or update a module
  * 
  * @param string $zip_file
  * 		The path where the zip file to install is stored
  * 
- * @return string|boolean
- * 		TRUE if the module installation is successful
+ * @return int|boolean
+ * 		1 if the module installation is successful
+ * 		2 if the module update is successful
  * 		An error message as a string in case of failure
  */
 function module_install($zip_file) {
@@ -544,15 +559,21 @@ function module_install($zip_file) {
 	}
 
 	// Check if module is already installed
-	if (module_is_installed($meta->id)) {
-		rrmdir($output_dir);
-		return $user->lang->get('module_already_installed');
-	}
+	$mode = module_is_installed($meta->id) ? "update" : "install";
 
-	// Check module version
+	// Check required OMMP version
 	if (!isset($meta->requirement) || $meta->requirement > OMMP_VERSION) {
 		rrmdir($output_dir);
 		return $user->lang->get('wrong_ommp_version');
+	}
+
+	// Check version if updating
+	if ($mode == "update") {
+		$currentMeta = module_get_metadata($meta->id);
+		if (!isset($meta->version) || $meta->version <= $currentMeta->version) {
+			rrmdir($output_dir);
+			return $user->lang->get('cant_update_to_lower');
+		}
 	}
 	
 	// Create the tables for the module
@@ -566,19 +587,26 @@ function module_install($zip_file) {
 	// Read the default values
 	$defaults = json_decode(@file_get_contents("$output_dir/defaults.json"));
 	if ($defaults === NULL || !isset($defaults->configurations) || !isset($defaults->rights) || !isset($defaults->protected)) {
+		if ($mode == "install") {
+			$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
+		}
 		rrmdir($output_dir);
 		return $user->lang->get('cannot_read_defaults');
 	}
 
 	// Create the configurations
 	foreach ($defaults->configurations as $name => $value) {
-		$full_name = $sql->quote($meta->id . "." . $name);
-		$result = $sql->exec("INSERT INTO {$db_prefix}config VALUES ($full_name, " . $sql->quote($value) . ")");
-		if ($result === FALSE) {
-			$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
-			$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
-			rrmdir($output_dir);
-			return $user->lang->get('cannot_create_config');
+		$full_name = $meta->id . "." . $name;
+		if (!dbSearchValue("{$db_prefix}config", "name", $full_name)) {
+			$result = $sql->exec("INSERT INTO {$db_prefix}config VALUES (" . $sql->quote($full_name) . ", " . $sql->quote($value) . ")");
+			if ($result === FALSE) {
+				if ($mode == "install") {
+					$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
+					$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
+				}
+				rrmdir($output_dir);
+				return $user->lang->get('cannot_create_config');
+			}
 		}
 	}
 
@@ -593,61 +621,122 @@ function module_install($zip_file) {
 	// Create the rights
 	foreach ($defaults->rights as $name => $right) {
 		$full_name = $sql->quote($meta->id . "." . $name);
-		// Get the protection
-		$protection = [0, 0, 0];
-		if (isset($defaults->protected->$name)) {
-			$protection = $defaults->protected->$name;
+		// Check if right exists
+		if (!dbSearchValue("{$db_prefix}rights", "name", "$full_name")) {
+			// Get the protection
+			$protection = [0, 0, 0];
+			if (isset($defaults->protected->$name)) {
+				$protection = $defaults->protected->$name;
+			}
+			// Create the rights for every groups
+			$list = "";
+			foreach ($groups as $group) {
+				$list .= "($full_name, $group, " . ($group <= 3 ? $right[$group - 1] : $right[1]) . ", " . ($group <= 3 ? $protection[$group - 1] : $protection[1]) . "),";
+			}
+			$result = $sql->exec("INSERT INTO {$db_prefix}rights VALUES " . substr($list, 0, -1));
+			if ($result === FALSE) {
+				if ($mode == "install") {
+					$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
+					$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
+					$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
+				}
+				rrmdir($output_dir);
+				return $user->lang->get('cannot_create_right');
+			}
 		}
-		// Create the rights for every groups
-		$list = "";
-		foreach ($groups as $group) {
-			$list .= "($full_name, $group, " . ($group <= 3 ? $right[$group - 1] : $right[1]) . ", " . ($group <= 3 ? $protection[$group - 1] : $protection[1]) . "),";
-		}
-		$result = $sql->exec("INSERT INTO {$db_prefix}rights VALUES " . substr($list, 0, -1));
+	}
+
+	// Create the directories
+	$final_dir = OMMP_ROOT . "/modules/$meta->id";
+	if ($mode == "install") {
+		$result = @mkdir(OMMP_ROOT . "/data/$meta->id", 0777, TRUE);
 		if ($result === FALSE) {
 			$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
 			$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
 			$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
 			rrmdir($output_dir);
-			return $user->lang->get('cannot_create_right');
+			return $user->lang->get('cannot_create_data_dir');
 		}
 	}
 
-	// Create the directories
-	$result = @mkdir(OMMP_ROOT . "/data/$meta->id", 0777, TRUE);
-	if ($result === FALSE) {
-		$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
-		$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
-		$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
-		rrmdir($output_dir);
-		return $user->lang->get('cannot_create_data_dir');
+	// Backup current directory if updating
+	if ($mode == "update") {
+		$result = @rename($final_dir, $final_dir . ".v-" . $currentMeta->version);
+		if ($result === FALSE) {
+			rrmdir($output_dir);
+			return $user->lang->get('cannot_backup_current_module');
+		}
 	}
 
 	// Move module content
-	$final_dir = OMMP_ROOT . "/modules/$meta->id";
 	$result = @rename($output_dir, $final_dir);
 	if ($result === FALSE) {
-		$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
-		$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
-		$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
-		rrmdir(OMMP_ROOT . "/data/$meta->id");
+		if ($mode == "install") {
+			$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
+			$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
+			$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$output_dir/uninstall.sql")));
+			rrmdir(OMMP_ROOT . "/data/$meta->id");
+		} else if ($mode == "update") {
+			// Restorate original files
+			@rename($final_dir . ".v-" . $currentMeta->version, $final_dir);
+		}
 		rrmdir($output_dir);
 		return $user->lang->get('cannot_move_files');
 	}
 
-	// Create the module in the database
-	$count = dbCount("{$db_prefix}modules");
-	$result = $sql->exec("INSERT INTO {$db_prefix}modules VALUES (NULL, '$meta->id', 1, $count)");
-	if ($result === FALSE) {
-		$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
-		$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
-		$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$final_dir/uninstall.sql")));
-		rrmdir(OMMP_ROOT . "/data/$meta->id");
-		rrmdir($final_dir);
-		return $user->lang->get('cannot_register_module');
+	// Create the module in the 
+	if ($mode == "install") {
+		$count = dbCount("{$db_prefix}modules");
+		$result = $sql->exec("INSERT INTO {$db_prefix}modules VALUES (NULL, '$meta->id', 1, $count)");
+		if ($result === FALSE) {
+			$sql->exec("DELETE FROM {$db_prefix}config WHERE `name` LIKE '$meta->id\\.%'");
+			$sql->exec("DELETE FROM {$db_prefix}rights WHERE `name` LIKE '$meta->id\\.%'");
+			$sql->exec(str_replace("{PREFIX}", $db_prefix, @file_get_contents("$final_dir/uninstall.sql")));
+			rrmdir(OMMP_ROOT . "/data/$meta->id");
+			rrmdir($final_dir);
+			return $user->lang->get('cannot_register_module');
+		}
 	}
 
-	return TRUE;
+	if ($mode == "update") {
+
+		$result = "";
+		try {
+
+			// Load the module's update functions
+			if (!file_exists("{$final_dir}/update.php")) {
+				throw new Exception($user->lang->get('update_file_missing'));
+			}
+			require_once "{$final_dir}/update.php";
+			
+			// Call the update function
+			if (!function_exists("{$meta->id}_update")) {
+				throw new Exception($user->lang->get('update_function_missing'));
+			}
+			$result = call_user_func("{$meta->id}_update", $currentMeta->version);
+
+			// Check result
+			if ($result !== TRUE) {
+				throw new Exception($result);
+			}
+
+		} catch (Exception $exception) {
+
+			// Restorate original files
+			rrmdir($final_dir);
+			@rename($final_dir . ".v-" . $currentMeta->version, $final_dir);
+
+			// Return error
+			return $user->lang->get('update_function_error') . "<br /><br /><i>" . $exception->getMessage() . "</i>";
+
+		}
+
+		// Clean backup
+		rrmdir($final_dir . ".v-" . $currentMeta->version);
+	
+	}
+
+	return $mode == "install" ? 1 : 2;
 
 }
 

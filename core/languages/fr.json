@@ -33,5 +33,9 @@
 	"cannot_move_files": "Impossible de déplacer les fichiers de module vers leur destination",
 	"cannot_register_module": "Impossible d'enregistrer le module",
 	"wrong_ommp_version": "Cette version de OMMP est trop ancienne pour ce module",
-	"module_already_installed": "Ce module est déjà installé"
+    "cant_update_to_lower": "Impossible de mettre à jour vers une version plus ancienne",
+    "cannot_backup_current_module": "Impossible de sauvegarder les fichiers actuels du module",
+    "update_function_error": "Le module a rencontré une erreur lors de sa mise à jour. Cette erreur n'est pas causée par OMMP, veuillez contacter le développeur du module.",
+    "update_file_missing": "Fichier de mise à jour manquant dans le module",
+    "update_function_missing": "Fonction de mise à jour manquante dans le module"
 }

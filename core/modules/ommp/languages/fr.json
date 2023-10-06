@@ -139,7 +139,7 @@
 	"cannot_disable_core_module": "Impossible de désactiver un module système",
 	"core_module": "Module système",
 	"cannot_update_module": "Impossible de modifier le module",
-	"install_module": "Installer un module",
+	"install_module": "Installer ou mettre à jour un module",
 	"download_url": "Adresse de téléchargement du module",
 	"install_from_internet": "Installer depuis internet",
 	"install": "Installer",
@@ -163,5 +163,6 @@
 	"wrong_url": "Format d'URL invalide",
 	"url_must_end_with_slash": "Chaque URL doit se terminer par une barre oblique \"/\"",
 	"modules_store": "Magasin de modules",
-	"access_to_store": "Accéder au magasin"
+	"access_to_store": "Accéder au magasin",
+	"module_updated": "Le module a été mis à jour"
 }
