@@ -61,6 +61,7 @@ function split_path($path, $splits) {
  *      The PHP array to transform into JSON
  */
 function output_json($data) {
+    ob_clean();
     header('Content-Type: application/json');
     echo json_encode($data);
     exit;
