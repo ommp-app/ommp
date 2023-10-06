@@ -523,7 +523,7 @@ function module_is_enabled($name) {
  * @param string $zip_file
  * 		The path where the zip file to install is stored
  * 
- * @return int|boolean
+ * @return int|string
  * 		1 if the module installation is successful
  * 		2 if the module update is successful
  * 		An error message as a string in case of failure
