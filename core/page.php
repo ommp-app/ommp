@@ -231,7 +231,8 @@ function prepare_html($content, $lang, $variables=[]) {
                     $key = substr($key, 2);
 					$value = $config->get($key);
 				} else {
-                    $value = $variables[strtolower($key)];
+                    $key = strtolower($key);
+                    $value = isset($variables[$key]) ? $variables[$key] : $key;
                 }
 
                 // Escape if needed
