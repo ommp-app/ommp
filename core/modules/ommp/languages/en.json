@@ -45,7 +45,7 @@
 	"ommp.trusted_sources#name": "Trusted sources",
 	"ommp.trusted_sources#desc": "A list of URLs that can be trusted for external modules installations (won't display confirmations for these sources)",
 	"ommp.store_url#name": "Module store address",
-	"ommp.store_url#desc": "Link for button to access online modules store, also contains return address",
+	"ommp.store_url#desc": "Online modules store link to access the catalog and check for updates",
     "rights_management": "Rights management",
     "platform_administration": "Platform administration",
     "configurations": "Configurations",
@@ -164,5 +164,6 @@
 	"url_must_end_with_slash": "Each URL must end by a slash \"/\"",
 	"modules_store": "Modules store",
 	"access_to_store": "Access to store",
-	"module_updated": "The module has been updated"
+	"module_updated": "The module has been updated",
+	"check_updates": "Updates"
 }

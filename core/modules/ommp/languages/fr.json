@@ -45,7 +45,7 @@
 	"ommp.trusted_sources#name": "Sources de confiance",
 	"ommp.trusted_sources#desc": "Une liste d'URL fiables pour les installations externes de modules (n'affichera pas de confirmations pour ces sources)",
 	"ommp.store_url#name": "Adresse du magasin de modules",
-	"ommp.store_url#desc": "Lien pour le bouton permettant d'accéder au magasin de modules en ligne, contient également l'adresse de retour",
+	"ommp.store_url#desc": "Lien du magasin de modules en ligne pour accéder au catalogue et vérifier les mises à jour",
     "rights_management": "Gestion des droits",
     "platform_administration": "Administration de la plateforme",
     "configurations": "Configurations",
@@ -164,5 +164,6 @@
 	"url_must_end_with_slash": "Chaque URL doit se terminer par une barre oblique \"/\"",
 	"modules_store": "Magasin de modules",
 	"access_to_store": "Accéder au magasin",
-	"module_updated": "Le module a été mis à jour"
+	"module_updated": "Le module a été mis à jour",
+	"check_updates": "Mises à jours"
 }
