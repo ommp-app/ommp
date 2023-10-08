@@ -38,6 +38,9 @@ h1 img {
 .inline-image-large {
     height: 3em;
 }
+.inline-image-huge {
+    height: 5em;
+}
 .inline-image-small {
     height: 0.7em;
 }

@@ -36,5 +36,8 @@
     "cant_update_to_lower": "Impossible de mettre à jour vers une version plus ancienne",
     "cannot_backup_current_module": "Impossible de sauvegarder les fichiers actuels du module",
     "update_module_error": "Le module a rencontré une erreur lors de sa mise à jour. Cette erreur n'est pas causée par OMMP, veuillez contacter le développeur du module. Le module risque de ne plus fonctionner correctement, si vous rencontrez des problèmes désinstallez et réinstallez-le.",
-    "cannot_update_sql": "Impossible de mettre à jour la base de données"
+    "cannot_update_sql": "Impossible de mettre à jour la base de données",
+	"si_units": "ko,Mo,Go,To,Po,Eo,Zo,Yo",
+	"iec_units": "Kio,Mio,Gio,Tio,Pio,Eio,Zio,Yio",
+	"byte_unit": "o"
 }

@@ -147,6 +147,40 @@ function parse_size($size) {
 }
 
 /**
+ * Format bytes as human-readable text.
+ * 
+ * @param int $bytes
+ *      Number of bytes.
+ * @param boolean $si
+ *      True to use metric (SI) units, aka powers of 1000.
+ *      False to use binary (IEC), aka powers of 1024.
+ * @param int $dp
+ *      Number of decimal places to display.
+ * 
+ * @source https://stackoverflow.com/a/14919494
+ * 
+ * @return string
+ *      Formatted string
+ */
+function human_file_size($bytes, $si=false, $dp=1) {
+    global $user;
+	$thresh = $si ? 1000 : 1024;
+	if (abs($bytes) < $thresh) {
+		return $bytes . " " . $user->lang->get('byte_unit');
+	}
+	$units = $si 
+		? explode(',', $user->lang->get('si_units'))
+		: explode(',', $user->lang->get('iec_units'));
+	$u = -1;
+	$r = 10**$dp;
+	do {
+		$bytes /= $thresh;
+		++$u;
+	} while (round(abs($bytes) * $r) / $r >= $thresh && $u < count($units) - 1);
+	return number_format($bytes, $dp) . " " . $units[$u];
+}
+
+/**
  * Return the size of a folder in bytes
  * @param string $dir
  *      The directory to scan

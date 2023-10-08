@@ -36,5 +36,8 @@
     "cant_update_to_lower": "Unable to update to older version",
     "cannot_backup_current_module": "Unable to save current module files",
     "update_module_error": "The module encountered an error while updating it. This error is not caused by OMMP, please contact the module developer. The module may no longer work correctly, if you encounter problems uninstall and reinstall it.",
-    "cannot_update_sql": "Unable to update database"
+    "cannot_update_sql": "Unable to update database",
+	"si_units": "kB,MB,GB,TB,PB,EB,ZB,YB",
+	"iec_units": "KiB,MiB,GiB,TiB,PiB,EiB,ZiB,YiB",
+	"byte_unit": "B"
 }
