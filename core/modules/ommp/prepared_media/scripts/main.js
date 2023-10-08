@@ -297,5 +297,10 @@ function getCookie(cname) {
     return "";
 }
 
+// Fix negative modulo (thanks JavaScript)
+Number.prototype.mod = function(n) {
+	return ((this % n) + n) % n;
+}
+
 // Function to call on popup close
 let popupCloseCallback = null;
