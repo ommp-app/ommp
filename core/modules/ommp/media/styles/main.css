@@ -174,3 +174,7 @@ th {
 .text-bg-danger code {
     color: white;
 }
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

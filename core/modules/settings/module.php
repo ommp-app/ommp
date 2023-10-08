@@ -191,9 +191,8 @@ function settings_process_api($action, $data) {
 		$sql->exec("DELETE FROM {$db_prefix}sessions WHERE user_id  = $user->id AND session_key = " . $sql->quote($user->session_key));
 
 		// Delete the cookies
-		$expire = time() - 3600;
-		setcookie($config->get('ommp.cookie_user'), "", $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
-		setcookie($config->get('ommp.cookie_session'), "", $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
+		delete_ommp_cookie($config->get('ommp.cookie_user'));
+		delete_ommp_cookie($config->get('ommp.cookie_session'));
 
 		// Return success
 		return ["ok" => TRUE];

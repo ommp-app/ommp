@@ -92,13 +92,11 @@ class User {
         if ($this->id == 0) {
             return FALSE;
         }
-        $session_key = random_str(64);
-        $expire = time() + intval($config->get('ommp.session_duration'));
-        setcookie($config->get('ommp.cookie_user'), $this->username, $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
-        setcookie($config->get('ommp.cookie_session'), $session_key, $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
-        $this->session_key = $session_key;
+        $this->session_key = random_str(64);
+        $expire = set_ommp_cookie($config->get('ommp.cookie_user'), $this->username);
+        set_ommp_cookie($config->get('ommp.cookie_session'), $this->session_key);
         $this->session_key_hmac = hash_hmac("sha256", $this->session_key, $hmac_key);
-        return $sql->exec("INSERT INTO $db_name.{$db_prefix}sessions VALUES (".$sql->quote($this->id).", ".$sql->quote($session_key).", ".$sql->quote($expire).")");
+        return $sql->exec("INSERT INTO $db_name.{$db_prefix}sessions VALUES (".$sql->quote($this->id).", ".$sql->quote($this->session_key).", ".$sql->quote($expire).")");
     }
 
     /**
@@ -124,9 +122,8 @@ class User {
                 return $requiredUser;
             }
             // Otherwise, cookies are deleted
-            $expire = time() - 3600;
-            setcookie($config->get('ommp.cookie_user'), "", $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
-            setcookie($config->get('ommp.cookie_session'), "", $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
+            delete_ommp_cookie($config->get('ommp.cookie_user'));
+            delete_ommp_cookie($config->get('ommp.cookie_session'));
         }
         // Returns the visitor user
         return new User('');

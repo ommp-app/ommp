@@ -181,6 +181,46 @@ function human_file_size($bytes, $si=false, $dp=1) {
 }
 
 /**
+ * Set a cookie according to the OMMP configuration
+ * 
+ * @param string $name
+ *      The name of the cookie
+ * @param string $value
+ *      The value of the cookie
+ * @param boolean $httponly
+ *      Should the cookie be HTTP only (not accessible via JavaScript)
+ * 
+ * @return int|boolean
+ *      The expiration timestamp of the cookie if success
+ *      FALSE if error
+ */
+function set_ommp_cookie($name, $value, $httponly=TRUE) {
+    global $config;
+    $expire = time() + intval($config->get('ommp.session_duration'));
+    $result = setcookie($name, $value, $expire, $config->get('ommp.dir'), $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", $httponly);
+    if ($result === FALSE) {
+        return FALSE;
+    }
+    return $expire;
+}
+
+/**
+ * Deletes a cookie
+ * 
+ * @param string $name
+ *      The name of the cookie to delete
+ * 
+ * @return boolean
+ *      TRUE is cookie has been deleted
+ *      FALSE on error
+ */
+function delete_ommp_cookie($name) {
+    global $config;
+    $expire = time() - 3600;
+    return setcookie($name, "", $expire, "/", $config->get('ommp.domain'), $config->get('ommp.scheme') == "https", TRUE);
+}
+
+/**
  * Return the size of a folder in bytes
  * @param string $dir
  *      The directory to scan

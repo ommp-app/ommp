@@ -170,6 +170,7 @@ function prepare_html($content, $lang, $variables=[]) {
     $max_upload = @file_upload_max_size();
     $variables = array_merge($variables, array(
         's:page_resources_version' => OMMP_VERSION . '-' . $user->lang->current_language(), // Some resources depends on the language
+        's:ommp_version' => OMMP_VERSION,
         's:domain' => $config->get("ommp.domain"),
         's:scheme' => $config->get("ommp.scheme"),
         's:dir' => $config->get("ommp.dir"),
