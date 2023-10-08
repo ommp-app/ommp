@@ -627,7 +627,9 @@ function ommp_process_api($action, $data) {
 				"registration_time" => $requiredUser->registration_time,
 				"formatted_registration" => date($user->module_lang->get("date_format"), $requiredUser->registration_time),
 				"groups" => $requiredUser->groups,
-				"groups_names" => $groups_names
+				"groups_names" => $groups_names,
+				"certified" => $user->certified,
+				"certified_image" => $user->certification_html()
 			]
 		];
 
@@ -639,7 +641,7 @@ function ommp_process_api($action, $data) {
 		}
 
 		// Check if property is editable
-		if (!in_array($data['property'], ["username", "longname", "email", "lang", "password"])) {
+		if (!in_array($data['property'], ["username", "longname", "email", "lang", "password", "certified"])) {
 			return ["error" => $user->module_lang->get("property_not_found")];
 		}
 
@@ -680,6 +682,11 @@ function ommp_process_api($action, $data) {
             return ["error" => $user->module_lang->get("wrong_lang")];
         }
 
+        // Check the certified status
+        if ($data['property'] == "certified" && !in_array($data['value'], ["0", "1"])) {
+            return ["error" => $user->module_lang->get("wrong_certification")];
+        }
+
 		// Hash password if needed
 		if ($data['property'] == "password") {
 			$data['value'] = hash("sha256", $data['value']);
@@ -694,7 +701,10 @@ function ommp_process_api($action, $data) {
         }
 
 		// Return success
-		return ["ok" => TRUE];
+		return [
+			"ok" => TRUE,
+			"certification_image" => $requiredUser->certification_html(TRUE)
+		];
 
 	} else if ($action == "delete-user") {
 

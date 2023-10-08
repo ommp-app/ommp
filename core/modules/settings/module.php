@@ -79,7 +79,9 @@ function settings_process_api($action, $data) {
 				"registration_time" => $user->registration_time,
 				"formatted_registration" => date($user->module_lang->get("date_format"), $user->registration_time),
 				"groups" => $user->groups,
-				"groups_names" => $groups_names
+				"groups_names" => $groups_names,
+				"certified" => $user->certified,
+				"certified_image" => $user->certification_html()
 			]
 		];
 

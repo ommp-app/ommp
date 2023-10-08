@@ -165,5 +165,7 @@
 	"modules_store": "Modules store",
 	"access_to_store": "Access to store",
 	"module_updated": "The module has been updated",
-	"check_updates": "Updates"
+	"check_updates": "Updates",
+	"certified_user": "Certified user",
+	"wrong_certification": "Wrong certification choice"
 }

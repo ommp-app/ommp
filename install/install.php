@@ -199,7 +199,7 @@ if ($_GET['step'] == "4") {
 
 	// Create the admin user
 	$result = $sql->exec("INSERT INTO {$db_prefix}users VALUES (NULL, " . $sql->quote($_POST['username']) . ", " . $sql->quote($_POST['longname']) . ", " .
-		$sql->quote(hash("sha256", $_POST['password'])) . ", " . $sql->quote($_POST['email']) . ", " . $sql->quote(time()) . ", " . $sql->quote($lang_code) . ")");
+		$sql->quote(hash("sha256", $_POST['password'])) . ", " . $sql->quote($_POST['email']) . ", " . $sql->quote(time()) . ", " . $sql->quote($lang_code) . ", TRUE)");
 	if ($result === FALSE) {
 		error($lang->create_admin_error);
 	}

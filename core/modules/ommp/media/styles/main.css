@@ -47,6 +47,9 @@ h1 img {
 .baseline {
 	vertical-align: baseline;
 }
+.sub {
+    vertical-align: sub;
+}
 .w-0 { width: 0; }
 .w-5 { width: 5%; }
 .w-10 { width: 10%; }

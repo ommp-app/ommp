@@ -23,6 +23,7 @@ class User {
     public $longname = ""; // User complete name
     public $password = ""; // User password hash
     public $email = ""; // User email
+    public $certified = FALSE; // Is the user certified?
     public $registration_time = 0; // User registration time
     public $session_key = ""; // User current session key (if connected)
     public $session_key_hmac = ""; // User current session key hmac (if connected)
@@ -57,6 +58,7 @@ class User {
             $this->email = $line['email'];
             $this->registration_time = intval($line['registration_time']);
             $this->password = $line['password'];
+            $this->certified = $line['certified'] == "1";
 
             // Get groups
             $this->groups = [];
@@ -162,6 +164,21 @@ class User {
         }
         $query->closeCursor();
         return $modules;
+    }
+
+    /**
+     * Return the HTML code for the inline certification image
+     * 
+     * @param boolean $force
+     *      Force the image to be returned even if the user is not certified
+     * 
+     * @return string
+     *      The certification HTML code if the user is certified
+     *      An ampty string if the user is not certified
+     */
+    public function certification_html($force=FALSE) {
+        global $config;
+        return $this->certified || $force ? '<img src="' . $config->get("ommp.dir") . 'media/ommp/images/certified.svg?v=' . OMMP_VERSION . '-' . $this->lang->current_language() . '" alt="(C)" title="' . htmlvarescape($this->lang->get("certified_user")) . '" class="certified-icon inline-image sub ms-2" />' : '';
     }
 
     /**

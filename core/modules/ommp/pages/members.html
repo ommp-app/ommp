@@ -38,7 +38,7 @@ function searchUser(username=null) {
  * @param {*} user An object containing informations about the user
  */
 function displayUser(user) {
-	$('#user-profile').html('<hr class="mt-5 mb-5" /><h4>' + formatUsername(user.username, user.longname, true, true) +
+	$('#user-profile').html('<hr class="mt-5 mb-5" /><h4 id="user-name">' + formatUsername(user.username, user.longname, true, true) + user.certified_image +
 		'</h4><div class="lighter code">{JS:L:USER_ID}' + user.id + '<br />{JS:L:REGISTRATION_DATE}' + escapeHtml(user.formatted_registration) + 
 		'<br />{JS:L:MEMBER_OF} ' + user.groups_names.join(', ') + '</div>' +
 		getEditableInput('{JS:L:USERNAME}', 'username', user.username, user.id) +
@@ -46,7 +46,9 @@ function displayUser(user) {
 		getEditableInput('{JS:L:EMAIL}', 'email', user.email, user.id) +
 		getEditableOuter('{JS:L:LANG}', 'lang', user.lang_html, user.id) +
 		getEditableInput('{JS:L:PASSWORD}', 'password', '', user.id, 'password') +
-		'<div class="btn pt-1 pb-1 mt-4 btn-danger" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="deleteUser(' + user.id + ')">{JS:L:DELETE_USER}</div>'
+		getEditableOuter('{JS:L:CERTIFIED_USER}', 'certified', '<select name="certified" id="certified" style="width:70%;display:inline-block;" class="form-select">' +
+			'<option value="0"' + (!user.certified ? ' selected' : '') +'>{JS:L:NO}</option><option value="1"' + (user.certified ? ' selected' : '') +'>{JS:L:YES}</option></select>', user.id) +
+		'<div class="btn pt-1 pb-1 mt-5 btn-danger" style="vertical-align:baseline;" role="button" aria-pressed="true" onclick="deleteUser(' + user.id + ')">{JS:L:DELETE_USER}</div>'
 	);
 	location.href = '#' + user.username;
 }
@@ -136,6 +138,14 @@ function updateUser(userId, property) {
 		}
 		// Display message
 		notif('{JS:L:USER_UPDATED}');
+		// Update certification if needed
+		if (property == 'certified') {
+			if (value == '1') {
+				$('#user-name').append(r.certification_image);
+			} else {
+				$('.certified-icon').remove();
+			}
+		}
 	});
 }
 // Request API to get the members list

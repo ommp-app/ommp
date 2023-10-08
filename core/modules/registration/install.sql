@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `{PREFIX}users` (
   `email` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `registration_time` int(11) NOT NULL DEFAULT '0',
   `lang` varchar(2) COLLATE utf8mb4_bin NOT NULL,
+  `certified` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 COMMIT;

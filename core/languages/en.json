@@ -39,5 +39,6 @@
     "cannot_update_sql": "Unable to update database",
 	"si_units": "kB,MB,GB,TB,PB,EB,ZB,YB",
 	"iec_units": "KiB,MiB,GiB,TiB,PiB,EiB,ZiB,YiB",
-	"byte_unit": "B"
+	"byte_unit": "B",
+    "certified_user": "Certified user"
 }

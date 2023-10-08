@@ -39,5 +39,6 @@
     "cannot_update_sql": "Impossible de mettre à jour la base de données",
 	"si_units": "ko,Mo,Go,To,Po,Eo,Zo,Yo",
 	"iec_units": "Kio,Mio,Gio,Tio,Pio,Eio,Zio,Yio",
-	"byte_unit": "o"
+	"byte_unit": "o",
+    "certified_user": "Utilisateur certifié"
 }

@@ -14,7 +14,7 @@
  * @param {*} rights An object containing the rights of the user
  */
 function displayUser(user, rights) {
-	$('#user-profile').html('<h4 class="mt-5">' + formatUsername(user.username, user.longname, true, true) +
+	$('#user-profile').html('<h4 class="mt-5">' + formatUsername(user.username, user.longname, true, true) + user.certified_image +
 		'</h4><div class="lighter code">{JS:L:USER_ID}' + user.id + '<br />{JS:L:REGISTRATION_DATE}' + escapeHtml(user.formatted_registration) + 
 		'<br />{JS:L:MEMBER_OF} ' + escapeHtml(user.groups_names.join(', ')) + '</div>' +
 		getEditableInput('{JS:L:USERNAME}', 'username', user.username, !rights.change_username, 'text', rights.change_username) +

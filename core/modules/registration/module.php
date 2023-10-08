@@ -138,7 +138,7 @@ function registration_process_page($page, $pages_path) {
         }
 
         // If everything is good we create the account
-        $response = $sql->exec("INSERT INTO $db_name.{$db_prefix}users VALUES (NULL, " . $sql->quote($_POST['username']) . ", " . $sql->quote($_POST['longname']) . ", " . $sql->quote(hash("sha256", $_POST['password'])) . ", " . $sql->quote($_POST['email']) . ", " . time() . ", " . $sql->quote($_POST['language']) . ")");
+        $response = $sql->exec("INSERT INTO $db_name.{$db_prefix}users VALUES (NULL, " . $sql->quote($_POST['username']) . ", " . $sql->quote($_POST['longname']) . ", " . $sql->quote(hash("sha256", $_POST['password'])) . ", " . $sql->quote($_POST['email']) . ", " . time() . ", " . $sql->quote($_POST['language']) . ", FALSE)");
 
 		// Add user to the default group
 		if ($response !== FALSE) {
