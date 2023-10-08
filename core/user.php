@@ -90,7 +90,7 @@ class User {
     function create_session() {
         global $sql, $config, $db_name, $db_prefix, $hmac_key;
         if ($this->id == 0) {
-            return;
+            return FALSE;
         }
         $session_key = random_str(64);
         $expire = time() + intval($config->get('ommp.session_duration'));
@@ -179,7 +179,7 @@ class User {
      *      FALSE else
      */
     public static function check_username_format($username) {
-        return strlen($username) <= 32 && preg_match('/^[a-zA-Z0-9_](?:(?:\.[a-zA-Z0-9_])|[a-zA-Z0-9_])+$/m', $username);
+        return strlen($username) <= 32 && preg_match('/^[a-zA-Z0-9_](?:(?:\.[a-zA-Z0-9_])|[a-zA-Z0-9_])+$/m', $username) && !ctype_digit($username);
     }
 
     /**
