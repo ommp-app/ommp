@@ -375,9 +375,9 @@ function module_simple_html($page, $pages_path, $variables=[], $titles=NULL) {
 		// Check if is set
 		if (isset($titles[$page])) {
 			$title = $titles[$page];
-		} else if (endsWith($page, "index.html") && isset($titles[substr($page, 0, -10)]))  {
+		} else if (str_ends_with($page, "index.html") && isset($titles[substr($page, 0, -10)]))  {
 			$title = $titles[substr($page, 0, -10)];
-		} else if (endsWith($page, "index") && isset($titles[substr($page, 0, -5)]))  {
+		} else if (str_ends_with($page, "index") && isset($titles[substr($page, 0, -5)]))  {
 			$title = $titles[substr($page, 0, -5)];
 		}
 

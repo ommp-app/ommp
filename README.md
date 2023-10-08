@@ -7,7 +7,7 @@ This project is still under development and is not finished yet. It can contains
 
 ## Requirements
 - Apache >= 2.4.35 (with mod_rewrite)
-- PHP >= 7.2.10
+- PHP >= 8
 - MySQL >= 5.7.23
 
 ## Files and folders description

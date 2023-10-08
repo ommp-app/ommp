@@ -456,35 +456,6 @@ function recaptcha_is_valid() {
 }
 
 /**
- * Checks if a string starts with another
- * 
- * @param string $string The string into we want to search
- * @param string $startString The string we want to search
- * 
- * @return boolean
- * 		TRUE if $string starts with $startString
- * 		FALSE else
- */
-function startsWith($string, $startString) {
-    return substr($string, 0, strlen($startString)) === $startString;
-}
-
-/**
- * Checks if a string ends with another
- * 
- * @param string $string The string into we want to search
- * @param string $endString The string we want to search
- * 
- * @return boolean
- * 		TRUE if $string ends with $endString
- * 		FALSE else
- */
-function endsWith($string, $endString) {
-    $len = strlen($endString);
-    return $len == 0 || substr($string, -$len) === $endString;
-}
-
-/**
  * Removes a directory and all its content
  * 
  * @source
